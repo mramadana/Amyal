@@ -1,0 +1,223 @@
+<template>
+    <div class="defaultLayout">
+        <header class="header" :class="headerClass">
+            <div class="container">
+                <div class="inner-header">
+                    <span class="hint-header"
+                        >{{ $t("Home.Welcome_Amial_website") }}
+                    </span>
+                    <div class="dropdown drop-lang">
+                        <a
+                            class="dropdown-toggle hint-lang"
+                            href="#"
+                            data-bs-toggle="dropdown"
+                        >
+                            <i class="fas fa-globe icon"></i>
+                            <div v-if="htmlLang == ''">
+                                <p>العربية</p>
+                            </div>
+                            <div v-else>
+                                <p>
+                                    {{
+                                        htmlLang === "ar"
+                                            ? "العربية"
+                                            : "english"
+                                    }}
+                                </p>
+                            </div>
+                        </a>
+
+                        <ul class="dropdown-menu">
+                            <button
+                                class="dropdown-item"
+                                @click="switchLang('ar')"
+                            >
+                                العربيه
+                            </button>
+                            <button
+                                class="dropdown-item"
+                                @click="switchLang('en')"
+                            >
+                                English
+                            </button>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-header">
+                <div class="container">
+                  <div class="inner">
+                    <div class="logo">
+                      <img src="@/assets/images/logo.png" alt="logo" @click="emitEvent" />
+                    </div>
+                      <ul class="nav-links" :class="{ active: navLinksActive }">
+                        <li>
+                          <NuxtLink to="/" class="link">
+                              {{ $t("Home.home") }}
+                          </NuxtLink>
+                        </li>
+    
+                        <li>
+                          <NuxtLink to="" class="link">
+                              {{ $t("Home.about_site") }}
+                          </NuxtLink>
+                        </li>
+                        
+                        <li>
+                          <NuxtLink to="" class="link">
+                              {{ $t("Home.connect_us") }}
+                          </NuxtLink>
+                        </li>
+      
+                      </ul>
+      
+                      <div class="left">
+
+                            <button class="dropdown dropdown-profile" v-if="showLogo">
+                                <div class="profile-hint" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="@/assets/images/profile_img.jpg" alt="user-image" class="user-image">
+                                    <p class="user-name">أحمد محمد</p>
+                                </div>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <nuxt-link class="dropdown-item" to="">{{ $t("Home.profile_personly") }}</nuxt-link>
+                                    <nuxt-link class="dropdown-item" to="">{{ $t("Home.settings") }}</nuxt-link>
+                                    <nuxt-link class="dropdown-item" to="">{{ $t("Home.portfolio") }}</nuxt-link>
+                                    <nuxt-link class="dropdown-item" to="">{{ $t("Home.myrequests") }}</nuxt-link>
+                                    <nuxt-link class="dropdown-item" to="/Auth/login">{{ $t("Home.logout") }}</nuxt-link>
+                                </ul>
+                            </button>
+
+                            <Nuxt-link to="/Auth/login" class="notification" v-if="showLogo">
+                                <div class="notif-icon" :data-number="4">
+                                    <i class="fas fa-bell"></i>
+                                </div>
+                            </Nuxt-link>
+
+                            <nuxt-link class="btn-login" to="/Auth/login">
+                            <i class="fas fa-sign-in-alt sign-icon"></i>
+                            <span class="login-text">{{ $t("Auth.login") }}</span>
+                            </nuxt-link>
+                            <button
+                                class="nav-btn"
+                                @click="handleClick"
+                                :class="{ active: navBtnActive }"
+                            >
+                                <span></span><span></span><span></span>
+                            </button>
+                            <div class="nav-overlay" @click="handleOverlayClick" :class="{ show: navOverlayShow }"
+                        ></div>
+                      </div>
+                  </div>
+                </div>
+            </div>
+        </header>
+
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            htmlLang: "",
+            checked: false,
+            navBtnActive: false,
+            navLinksActive: false,
+            navOverlayShow: false,
+            isActive: false,
+            showLogo: true
+        };
+    },
+
+    methods: {
+        chageDir(dir) {
+            let element = document.querySelector(".html_direction");
+            element.setAttribute("lang", dir);
+            if (dir === "ar") {
+                element.setAttribute("dir", "rtl");
+                this.htmlLang = dir;
+            }
+            if (dir === "en") {
+                element.setAttribute("dir", "ltr");
+                this.htmlLang = dir;
+            }
+        },
+        switchLang(newLang) {
+            if (newLang !== localStorage.getItem("locale")) {
+            localStorage.setItem("locale", newLang);
+            location.reload();
+            }
+        },
+
+
+        handleClick() {
+          this.navBtnActive = true;
+          this.navLinksActive = true;
+          this.navOverlayShow = true;
+        },
+
+        handleOverlayClick() {
+          this.navBtnActive = false;
+          this.navLinksActive = false;
+          this.navOverlayShow = false;
+        },
+    },
+
+    async mounted() {
+        let sessionKey = localStorage.getItem("locale");
+
+        window.sessionKey = localStorage.getItem("locale");
+        if (sessionKey) {
+            this.chageDir(localStorage.getItem("locale"));
+        }
+    },
+
+    created() {
+        // Check if the current route is within the Auth section
+        if (this.$route.path.startsWith('/Auth')) {
+        // If yes, hide it
+        this.showLogo = false;
+        }
+    },
+
+    watch: {
+        $route(to, from) {
+            // Watch for when the route changes close the side menu
+            this.handleOverlayClick();
+
+            // Check if the current route is not the home page
+            // Check if the current route is within the Auth section
+            if (this.$route.path.startsWith('/Auth')) {
+            // If yes, hide the logo
+            this.showLogo = false;
+            } else {
+            // Otherwise, show the logo
+            this.showLogo = true;
+            }
+      },
+    },
+
+    computed: {
+    headerClass() {
+      return {
+        'add-margin': this.shouldAddMarginBottom,
+      };
+    },
+    shouldAddMarginBottom() {
+      // Check if the current route is not the home page
+      return this.$route.path !== '/';
+    },
+    },
+};
+</script>
+
+<style lang="scss">
+    .add-margin {
+        margin-bottom: 40px;
+    }
+    .defaultLayout {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+</style>
