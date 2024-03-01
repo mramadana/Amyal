@@ -12,7 +12,7 @@
     
                 <div class="row">
                     <div class="col-12 col-md-6 mb-4" v-for="car in cars" :key="car.id">
-                        <nuxt-link :to="'/Cars/' + car.id" class="car-box">
+                        <nuxt-link :to="'/Cars/' + car.id" class="car-box" @click="saveFormData(car.id)">
                             <img :src="car.image" alt="car-img" class="car-img">
                             <div class="info">
                                 <h3 class="car-name">{{ car.name }}</h3>
@@ -108,9 +108,21 @@ export default {
             this.cars = data;
         },
 
-    filterDialog() {
+        filterDialog() {
             this.$refs.filter_Car.filtering_dialog = true;
         },
+
+        saveFormData(id) {
+            // Get existing form data from localStorage or initialize it as an empty object
+            let formData = JSON.parse(localStorage.getItem('formData')) || {};
+            
+            // Save the clicked car ID to the formData object
+            formData.carId = id;
+            
+            // Save the updated formData back to localStorage
+            localStorage.setItem('formData', JSON.stringify(formData));
+
+        }
     },
 
     computed: {

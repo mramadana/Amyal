@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="layout-form custom-width">
-            <h1 class="main-title bold lg mb-5">{{ $t("Auth.create_account") }}</h1>
+            <h1 class="main-title bold lg mb-5">{{ $t("Home.profile_personly") }}</h1>
             <form @submit.prevent="submitData">
                 <div class="row">
                     <div class="col-12 col-md-8 mr-auto">
@@ -83,58 +83,9 @@
                                 <input type="email" class="custum-input-icon" name="email" v-model="email" :placeholder="$t('Auth.please_enter_email')">
                             </div>
                         </div>
-
-                        <div class="form-group">
-                                <label class="label">
-                                    {{ $t('Auth.password') }}
-                                    <span class="hint-red">*</span>
-                                </label>
-                                <div class="main_input with_icon">
-                                    <i class="fas fa-lock sm-icon"></i>
-                                    <input :type="inputType('definitelyNewPassword')" name="password" class="custum-input-icon" :placeholder=" $t('Auth.please_enter_password') ">
-                                    <button class="static-btn" type="button" @click="togglePasswordVisibility('definitelyNewPassword')" :class="{ 'active_class': passwordVisible.definitelyNewPassword }">
-                                    <i class="far fa-eye icon"></i>
-                                    </button>
-                                </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label">
-                                {{ $t('Auth.confirm_password_sm') }}
-                                <span class="hint-red">*</span>
-                            </label>
-                            <div class="main_input with_icon">
-                                <i class="fas fa-lock sm-icon"></i>
-                                <input :type="inputType('definitelyNewPassword_2')" name="password_confirmation" class="custum-input-icon" :placeholder=" $t('Auth.please_confirm_password') ">
-                                <button class="static-btn" type="button" @click="togglePasswordVisibility('definitelyNewPassword_2')" :class="{ 'active_class': passwordVisible.definitelyNewPassword_2 }">
-                                <i class="far fa-eye icon"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="radios form-group check-inner mb-4">
-                            <div class="d-flex gap-3">
-                                <label class="custom-radio custom-check">
-                                    <input type="checkbox" name="is_condition" v-model="checked" class="d-none">
-                                    <span class="mark">
-                                        <i class="fas fa-check icon"></i>
-                                    </span>
-                                    <p class="check-text hint">
-                                    {{ $t("Auth.agree_to") }}
-                                    <NuxtLink to="" target="_blank" class="anchor">
-                                        {{ $t("Auth.terms_and_conditions") }}
-                                    </NuxtLink >
-                                    </p>
-                                </label>
-                            </div>
-                        </div>
                         
-                        <button class="custom-btn w-100 mr-auto">{{ $t('Auth.confirmation') }}</button>
-
-                        <div class="new-sign mt-4">
-                            {{ $t('Auth.already_have_account') }}
-                            <nuxt-link to="/Auth/login" >{{ $t('Auth.login') }}</nuxt-link>
-                        </div>
+                        
+                        <button class="custom-btn w-100 mt-5">{{ $t('Global.save') }}</button>
                     </div>
                 </div>
             </form>
@@ -144,12 +95,11 @@
 
 <script>
 definePageMeta({
-    name: "Auth.create_account",
+    name: "Home.profile_personly",
 });
 import dropdown_img from '@/assets/images/Flag.webp';
 import dropdown_img_1 from '@/assets/images/messi.gif';
 export default {
-
     data() {
         return {
             uploadedImage: [],
@@ -170,10 +120,6 @@ export default {
                 image: dropdown_img_1,
                 },
             ],
-            passwordVisible: {
-                definitelyNewPassword: false,
-                definitelyNewPassword_2: false
-            },
         }
     },
     methods: {
@@ -182,17 +128,9 @@ export default {
             this.uploadedImage = images;
         },
 
-        togglePasswordVisibility(input) {
-            this.passwordVisible[input] = !this.passwordVisible[input];
-        },
-
-        inputType(input) {
-            return this.passwordVisible[input] ? 'text' : 'password';
-        },
-
-        submitData() {
-            this.$router.push('/Auth/activateAccount')
-        }
+        // submitData() {
+            
+        // }
     }
 }
 </script>

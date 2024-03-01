@@ -2,7 +2,12 @@
     "Titles": {
         "home": "الرئيسية",
         "cars" : "السيارات",
-        "car_details" : "تفاصيل السيارة"
+        "car_details" : "تفاصيل السيارة",
+        "pending" : "قيد الانتظار",
+        "payment_pending" : "قيد الدفع",
+        "current" : "حالي",
+        "finished" : "منتهي",
+        "activation_code" : "كود التفعيل"
     },
 
     "Auth": {
@@ -61,7 +66,10 @@
         "settings" : "الاعدادات",
         "portfolio" : "المحفظة",
         "myrequests" : "طلباتي",
-        "logout" : "تسجيل خروج"
+        "logout" : "تسجيل خروج",
+        "retreat" : "تراجع",
+        "activation_code" : "كود التفعيل",
+        "edit_profile" : "تعديل الملف الشخصي"
     },
 
     "Global": {
@@ -122,7 +130,28 @@
         "write_comment" : "اكتب تعليقك",
         "send_evaluation" : "إرسال التقييم",
         "not_now" : "ليس الان",
-        "evaluation_sent_successfully" : "تهانينا ! تم ارسال التقييم بنجاح"
+        "evaluation_sent_successfully" : "تهانينا ! تم ارسال التقييم بنجاح",
+        "save" : "حفظ",
+        "order_number" : "رقم الطلب",
+        "status" : "الحالة",
+        "view_more" : "عرض المزيد",
+        "no_orders" : "لا يوجد طلبات",
+        "edit_profile" : "تعديل الملف الشخصي",
+        "change_mobile_number" : "تغيير رقم الجوال",
+        "change_email" : "تغيير البريد الالكتروني",
+        "change_password" : "تغيير كلمة المرور",
+        "notification_settings" : "اعدادات الاشعارات",
+        "delete_account" : "حذف الحساب",
+        "Saving_changes" : "حفظ التغييرات",
+        "enter_current_password_new_mobile" : "برجاء ادخال كلمة المرور الحالية و رقم الجوال الجديد",
+        "new_mobile" : "رقم الجوال الجديد",
+        "mobile_changed_successfully" : "تم تغيير رقم الجوال بنجاح",
+        "new_email" : "البريد الالكتروني الجديد",
+        "please_enter_new_email" : "الرجاء ادخال البريد الالكتروني الجديد",
+        "enter_current_password_new_email": "برجاء ادخال كلمة المرور الحالية و البريد الالكتروني الجديد",
+        "activation_code" : "كود التفعيل",
+        "Please_activation_email" : "برجاء ادخال كود التفعيل المرسل إليك عبر البريد الالكتروني",
+        "email_changed_successfully" : "تم تغييرالبريد الالكتروني بنجاح"
     }
 
 }

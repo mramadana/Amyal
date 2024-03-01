@@ -63,7 +63,19 @@
 
                             <!-- maps -->
 
-                            <div class="form-group">
+                            <!-- location 3 -->
+                            <div class="form-group" v-if="!rentalOptionCheck">
+                                <label class="label">
+                                    {{ $t('Global.place_of_delivery') }}
+                                    <span class="hint-red">*</span>
+                                </label>
+                                <div class="main_input with_icon">
+                                    <input type="text" class="location_input" name="location" v-model="location_3" label="Show" icon="pi pi-external-link" @click="place_of_deliveryDialog_3 = true" readonly>
+                                    <button class="static-btn" type="button"><i class="fas fa-map-marker-alt"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="form-group" v-if="rentalOptionCheck">
                                 <label class="label">
                                     {{ $t('Global.place_of_delivery') }}
                                     <span class="hint-red">*</span>
@@ -205,7 +217,6 @@
                             </div>
 
                             <button type="submit" class="custom-btn w-100"> {{ $t('Global.send_request') }} </button>
-    
                         </div>
                     </div>
 
@@ -214,19 +225,38 @@
         </div>
 
         <!-- map dialogs -->
+
+        <!-- location 3 -->
+        <ClientOnly v-if="!rentalOptionCheck">
+            <Dialog v-model:visible="place_of_deliveryDialog_3" modal class="custum_dialog_width" :draggable="false">
+                <div class="text-center">
+                    <p class="main-title mb-4">{{ $t('Global.place_of_delivery') }}</p>
+                        <Googlemap
+                            height="300px"
+                            apiKey="AIzaSyAboccHIj2gkfRleovrCxpYdePLR6ao1EY"
+                            @change-address="handellAddress($event, 'place_of_delivery_3')"
+                            :autocomplete="true"
+                            :language="language"
+                            class="autocomplete-dropdown"
+                        />
+                </div>
+            </Dialog>
+        </ClientOnly>
+
         
         <!-- place_of_deliveryDialog map -->
-        <ClientOnly>
+        <ClientOnly v-if="rentalOptionCheck">
             <Dialog v-model:visible="place_of_deliveryDialog" modal class="custum_dialog_width" :draggable="false">
                 <div class="text-center">
-                    <p class="main-title mb-4">{{ $t('Global.time_receipt') }}</p>
+                    <p class="main-title mb-4">{{ $t('Global.place_of_delivery') }}</p>
                         <Googlemap
                             height="300px"
                             apiKey="AIzaSyAboccHIj2gkfRleovrCxpYdePLR6ao1EY"
                             @change-address="handellAddress($event, 'place_of_delivery')"
-                            :autocomplete="true"
+                            :autocomplete="false"
                             :language="language"
                             class="autocomplete-dropdown"
+                            :location="first_location"
                         />
                 </div>
             </Dialog>
@@ -237,14 +267,15 @@
             <!-- Return_locationDialog -->
             <Dialog v-model:visible="Return_locationDialog" modal class="custum_dialog_width" :draggable="false">
                 <div class="text-center">
-                    <p class="main-title mb-4">{{ $t('Global.time_receipt') }}</p>
+                    <p class="main-title mb-4">{{ $t('Global.return_location') }}</p>
                     <Googlemap
                         height="300px"
                         apiKey="AIzaSyAboccHIj2gkfRleovrCxpYdePLR6ao1EY"
                         @change-address="handellAddress($event, 'Return_locationDialog')"
-                        :autocomplete="true"
+                        :autocomplete="false"
                         :language="language"
                         class="autocomplete-dropdown"
+                        :location="second_location"
                     />
                 </div>
             </Dialog>
@@ -268,10 +299,10 @@
         </Dialog>
 
         <!-- sent successfully dialog -->
-        <DialogsOrdersSentSuccessfully ref="sentSuccessfully" />
+        <DialogsOrdersSentSuccessfully ref="sentSuccessfully" :orderId="orderId" />
 
         <!-- paying dialog -->
-        <DialogsOrdersRentalPaying ref="paying" />
+        <DialogsOrdersRentalPaying ref="paying" :orderId="orderId" />
     </div>
 </template>
 
@@ -288,6 +319,13 @@ export default {
 
     data() {
         return {
+            location_3: '',
+            place_of_deliveryDialog_3: false,
+            third_location: {
+                lat: '',
+                lng: '',
+            },
+            orderId: null,
             today: new Date(),
             rentalOptionCheck: false,
             place_of_deliveryDialog: false,
@@ -363,20 +401,33 @@ export default {
         },
 
         handellAddress(event, locationType) {
-            if (locationType === 'place_of_delivery') {
-                this.location = event.address;
-                this.first_location.lat = event.info.geometry.location.lat();
-                this.first_location.lng = event.info.geometry.location.lng();
-                console.log(this.first_location, "first location");
-            } else if (locationType === 'Return_locationDialog') {
-                this.location_2 = event.address;
-                this.second_location.lat = event.info.geometry.location.lat();
-                this.second_location.lng = event.info.geometry.location.lng();
-                console.log(this.second_location, "second location");
-            }
-        },
+                if(locationType === 'place_of_delivery') {
+                    this.first_location.lat = 31.0281208;
+                    this.first_location.lng = 31.3814776;
+                    if (event && event.address) {
+                        this.location = event.address;
+                        console.log(this.location, "location");
+                        console.log(this.first_location, "first location");
+                        console.log(this.second_location, "second location");
+                    }
+                } else if(locationType === 'Return_locationDialog') {
+                    this.second_location.lat = 31.0627371;
+                    this.second_location.lng = 31.4024261;
+                    if (event && event.address) {
+                        this.location_2 = event.address;
+                        console.log(this.location_2, "location_2");
+                    }
+                } else if (locationType === 'place_of_delivery_3') {
+                    this.location_3 = event.address;
+                    this.third_location.lat = event.info.geometry.location.lat();
+                    this.third_location.lng = event.info.geometry.location.lng();
+                    console.log(this.third_location, "third location 33333333333");
+                }
+            },
 
         submitData() {
+            this.orderId = Math.floor(Math.random() * 10);
+            console.log(this.orderId, "orderId here");
 
             if(JSON.parse(localStorage.getItem('formData')).rentalOption === "with_driver") {
                 this.$refs.sentSuccessfully.sent_Successfully = true;
@@ -406,7 +457,19 @@ export default {
             if (formData.rentalOption === "without_driver") {
                 this.rentalOptionCheck = true;
             }
-        }
+        };
+
+            // start to handling map locations
+
+            // set location of place of delivery and return location
+            const deliveryAddress = { address: '' };
+            const returnAddress = { address: '' };
+
+            // Call handellAddress for place of delivery
+            this.handellAddress(deliveryAddress, 'place_of_delivery');
+
+            // Call handellAddress for return location
+            this.handellAddress(returnAddress, 'Return_locationDialog');
     },
     
 }

@@ -2,7 +2,12 @@
     "Titles": {
         "home": "Home",
         "cars" : "Cars",
-        "car_details" : "Car details"
+        "car_details" : "Car details",
+        "pending" : "Pending",
+        "payment_pending" : "Payment pending",
+        "current" : "Current",
+        "finished" : "Finished",
+        "activation_code" : "Activation code"
     },
 
     "Auth": {
@@ -61,7 +66,10 @@
         "settings" : "Settings",
         "portfolio" : "Portfolio",
         "myrequests" : "My requests",
-        "logout" : "Log out"
+        "logout" : "Log out",
+        "retreat" : "Retreat",
+        "activation_code" : "Activation code",
+        "edit_profile" : "Edit profile"
     },
 
     "Global": {
@@ -122,7 +130,28 @@
         "write_comment" : "Write your comment",
         "send_evaluation" : "send evaluation",
         "not_now" : "not now",
-        "evaluation_sent_successfully" : "Congratulations! Evaluation has been sent successfully"
+        "evaluation_sent_successfully" : "Congratulations! Evaluation has been sent successfully",
+        "save" : "save",
+        "order_number" : "order number",
+        "status" : "status",
+        "view_more" : "view more",
+        "no_orders" : "No orders",
+        "edit_profile" : "Edit profile",
+        "change_mobile_number" : "Change mobile number",
+        "change_email" : "Change email",
+        "change_password" : "Change password",
+        "notification_settings" : "Notification settings",
+        "delete_account" : "Delete account",
+        "Saving_changes" : "Saving changes",
+        "enter_current_password_new_mobile" : "Please enter your current password and new mobile number",
+        "new_mobile" : "New mobile number",
+        "mobile_changed_successfully" : "Mobile number changed successfully",
+        "new_email" : "New email",
+        "please_enter_new_email" : "Please enter a new email",
+        "enter_current_password_new_email": "Please enter your current password and new email",
+        "activation_code" : "Activation code",
+        "Please_activation_email" : "Please enter the activation code sent to your email",
+        "email_changed_successfully" : "Email has been changed successfully"
     }
 
 }

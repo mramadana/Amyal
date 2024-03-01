@@ -64,14 +64,10 @@
     definePageMeta({
     name: "Auth.restore_password",
 });
-import Dropdown from 'primevue/dropdown';
 import dropdown_img from '@/assets/images/Flag.webp';
 import dropdown_img_1 from '@/assets/images/messi.gif';
 
 export default {
-    components: {
-        Dropdown
-    },
     data() {
         return {
             name: '',

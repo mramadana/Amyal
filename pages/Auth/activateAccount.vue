@@ -38,9 +38,10 @@
 </template>
 
 <script>
+
 definePageMeta({
-    name: "Auth.activation_code",
-});
+        name: "Home.activation_code",
+    });
 import VOtpInput from "vue3-otp-input";
 
 export default {
@@ -56,7 +57,7 @@ export default {
   methods: {
 
     submitData() {   
-        this.$router.push('/Auth/confirmPassword')
+        this.$router.push('/')
     }
 
   },

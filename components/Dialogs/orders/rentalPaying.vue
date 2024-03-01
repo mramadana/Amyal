@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="text-center">
-                    <NuxtLink class="custom-btn sm d-inline-flex" to="/orders/orderDetails">{{ $t('Global.pay_now') }}</NuxtLink>
+                    <NuxtLink class="custom-btn sm d-inline-flex" :to= "'/orders/orderDetails/' + orderId">{{ $t('Global.pay_now') }}</NuxtLink>
                 </div>
 
         </Dialog>
@@ -44,6 +44,7 @@ import image_2 from '@/assets/images/wallet.png';
 
 
 export default {
+  props: ['orderId'],
   data() {
     return {
       payingDialog: false,

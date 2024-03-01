@@ -1,21 +1,22 @@
 <template>
 
     <div>
+        
         <div class="container">
             <div class="layout-form custom-width lg">
                 <h1 class="main-title bold lg mb-4">{{ $t("Global.order_details") }}</h1>
     
                 <ClientOnly>
-                    <ul :class="{ 'steps': true, 'small': rentalOptionCheck }">
+                    <ul :class="{ 'steps': true, 'small': rentalOptionCheck && type == 1 }">
                         
-                        <li :class="{ 'step-item active': true }" v-if="!rentalOptionCheck">
+                        <li :class="{ 'step-item active': true }" v-if="!rentalOptionCheck || type == 0">
                             <div class="icon-done">
                             <i class="fas fa-check icon"></i>
                             </div>
                             <span class="progress-label"> {{ $t("Global.waiting") }} </span>
                         </li>
             
-                        <li :class="{ 'step-item': true, 'active': order == 2 || order == 3 || order == 4 }" v-if="!rentalOptionCheck">
+                        <li :class="{ 'step-item': true, 'active': order == 2 || order == 3 || order == 4 }" v-if="!rentalOptionCheck || type == 0">
                             <div class="icon-done">
                             <i class="fas fa-check icon"></i>
                             </div>
@@ -180,13 +181,20 @@
 
 </template>
 
+<script setup>
+    const { id } = useRoute().params;
+    definePageMeta({
+        middleware: 'auth',
+        name: "Global.order_details",
+    })
+</script>
+
 <script>
-definePageMeta({
-    name: "Global.order_details",
-});
+
 export default {
     data() {
         return {
+            type: '',
             order: 3,
             rentalOptionCheck: false,
         }
@@ -232,6 +240,7 @@ export default {
 
     mounted() {
         this.rentalOption(); 
+        this.type = 0;
         // this.continuation();
     },
 

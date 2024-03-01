@@ -4,7 +4,7 @@
                 <div class="text-center">
                     <img src="@/assets/images/check.png" alt="check-img" class="check-img">
                     <h1 class="main-title bold mb-4">{{ $t('Global.congratulations_request') }}</h1>
-                    <NuxtLink class="custom-btn sm d-inline-flex" to="/orders/orderDetails">{{ $t('Global.track_your_order') }}</NuxtLink>
+                    <NuxtLink class="custom-btn sm d-inline-flex" :to="'/orders/orderDetails/' + orderId">{{ $t('Global.track_your_order') }}</NuxtLink>
                 </div>
         </Dialog>
     </div>
@@ -12,10 +12,11 @@
 
 <script>
 export default {
+    props: ['orderId'],
     data() {
         return {
             sent_Successfully: false
         };
-    }
+    },
 }
 </script>

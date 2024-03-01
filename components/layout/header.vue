@@ -79,11 +79,12 @@
                                     <p class="user-name">أحمد محمد</p>
                                 </div>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <nuxt-link class="dropdown-item" to="">{{ $t("Home.profile_personly") }}</nuxt-link>
-                                    <nuxt-link class="dropdown-item" to="">{{ $t("Home.settings") }}</nuxt-link>
+                                    <nuxt-link class="dropdown-item" to="/profile">{{ $t("Home.profile_personly") }}</nuxt-link>
+                                    <nuxt-link class="dropdown-item" to="/settings">{{ $t("Home.settings") }}</nuxt-link>
                                     <nuxt-link class="dropdown-item" to="">{{ $t("Home.portfolio") }}</nuxt-link>
-                                    <nuxt-link class="dropdown-item" to="">{{ $t("Home.myrequests") }}</nuxt-link>
-                                    <nuxt-link class="dropdown-item" to="/Auth/login">{{ $t("Home.logout") }}</nuxt-link>
+                                    <nuxt-link class="dropdown-item" to="/myorders">{{ $t("Home.myrequests") }}</nuxt-link>
+                                    <button type="button" @click="logoutDialog = true" class="dropdown-item">{{ $t("Home.logout") }}</button>
+                                    <!-- <nuxt-link class="dropdown-item" to="/Auth/login">{{ $t("Home.logout") }}</nuxt-link> -->
                                 </ul>
                             </button>
 
@@ -112,6 +113,17 @@
             </div>
         </header>
 
+        <!-- logout Dialog -->
+        <Dialog v-model:visible="logoutDialog" modal class="custum_dialog_width" :draggable="false">
+                <div class="text-center">
+                    <img src="@/assets/images/noun_warning.png" alt="check-img" class="check-img">
+                    <h1 class="main-title bold mb-4">{{ $t('Global.congratulations_request') }}</h1>
+                    <div class="section-btns mt-5">
+                        <button type="button" class="custom-btn sm d-inline-flex" @click="logoutDialog = false">{{ $t('Home.retreat') }}</button>
+                        <button type="button" class="custom-btn logout sm d-inline-flex" @click="logout">{{ $t('Home.logout') }}</button>
+                    </div>
+                </div>
+        </Dialog>
     </div>
 </template>
 
@@ -119,6 +131,7 @@
 export default {
     data() {
         return {
+            logoutDialog: false,
             htmlLang: "",
             checked: false,
             navBtnActive: false,
@@ -130,6 +143,11 @@ export default {
     },
 
     methods: {
+        logout() {
+            localStorage.clear();
+            this.logoutDialog = false;
+            this.$router.push("/Auth/login");
+        },
         chageDir(dir) {
             let element = document.querySelector(".html_direction");
             element.setAttribute("lang", dir);
@@ -187,12 +205,18 @@ export default {
 
             // Check if the current route is not the home page
             // Check if the current route is within the Auth section
-            if (this.$route.path.startsWith('/Auth')) {
+
+           console.log(this.$route.path);
+            if (this.$route.path.includes('Auth')) {
             // If yes, hide the logo
-            this.showLogo = false;
+            setTimeout(() => {
+                this.showLogo = false;
+            }, 10);
             } else {
             // Otherwise, show the logo
-            this.showLogo = true;
+            setTimeout(() => {
+                this.showLogo = true;
+            }, 10)
             }
       },
     },
