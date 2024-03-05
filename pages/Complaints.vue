@@ -1,22 +1,30 @@
 <template>
     <div class="container">
         <div class="layout-form custom-width">
-            <h1 class="main-title bold lg mb-5">{{ $t("Auth.restore_password") }}</h1>
+            <h1 class="main-title bold lg mb-5">{{ $t("Global.complaints_suggestions") }}</h1>
             <form @submit.prevent="submitData">
                 <div class="row">
                     <div class="col-12 col-md-8 mr-auto">
-                        <div class="text-center mb-5">
-                            <img src="@/assets/images/restore-image.svg" alt="restore-image" class="restore-image mb-4">
-                            <p class="main-title">{{ $t("Auth.Please_enter_mobile_number") }}</p>
+
+                        <div class="form-group">
+                            <label class="label">
+                                {{ $t('Auth.username') }}
+                            </label>
+                            <div class="main_input">
+                                <i class="fas fa-user sm-icon"></i>
+                                <input type="text" class="custum-input-icon" name="name" v-model="name" :placeholder="$t('Auth.enter_username')">
+                            </div>
                         </div>
 
-                        <div class="form-group mb-5">
+                        <div class="form-group">
                             <label class="label">
                                 {{ $t('Auth.mobile_number') }}
-                                <span class="hint-red">*</span>
                             </label>
                             <div class="with_cun_select">
-                                <input type="number" class="main_input" name="name" v-model="name" :placeholder="$t('Auth.mobile_number')">
+                                <div class="main_input">
+                                    <i class="fas fa-mobile-alt sm-icon"></i>
+                                    <input type="number" class="custum-input-icon" name="name" v-model="name" :placeholder="$t('Auth.please_mobile_number')">
+                                </div>
                                 <div class="card d-flex justify-content-center dropdown_card">
                                 <Dropdown
                                 v-model="selectedCountry"
@@ -52,7 +60,18 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="custom-btn w-100 mr-auto"> {{ $t('Auth.confirmation') }} </button>
+
+                        <div class="form-group">
+                            <label class="label">
+                                {{ $t('Global.complaintsuggestion') }}
+                            </label>
+                            <textarea  class="main_input main_area mb-4" :placeholder="$t('Global.please_enter_complaints')"></textarea>
+                        </div>
+
+                        
+                        
+                        <button class="custom-btn w-100 mr-auto mt-4">{{ $t('Global.send') }}</button>
+
                     </div>
                 </div>
             </form>
@@ -61,16 +80,16 @@
 </template>
 
 <script>
-    definePageMeta({
-    name: "Auth.restore_password",
+definePageMeta({
+    name: "Global.complaints_suggestions",
 });
 import dropdown_img from '@/assets/images/Flag.webp';
 import dropdown_img_1 from '@/assets/images/messi.gif';
-
 export default {
+
     data() {
         return {
-            name: '',
+            uploadedImage: [],
             selectedCountry: {
                     key: "+966",
                     code: "SA",
@@ -90,10 +109,11 @@ export default {
             ],
         }
     },
-
     methods: {
+
+
         submitData() {
-            this.$router.push('/Auth/restorepassword-check-code')
+   
         }
     }
 }

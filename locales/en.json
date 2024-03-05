@@ -151,7 +151,29 @@
         "enter_current_password_new_email": "Please enter your current password and new email",
         "activation_code" : "Activation code",
         "Please_activation_email" : "Please enter the activation code sent to your email",
-        "email_changed_successfully" : "Email has been changed successfully"
+        "email_changed_successfully" : "Email has been changed successfully",
+        "enter_old_password_new_password" : "Please enter your old password and new password",
+        "old_password" : "Old password",
+        "notifications_settings" : "Notifications settings",
+        "Activate_notifications" : "Activate notifications",
+        "delete" : "Delete",
+        "account_deleted" : "The account has been deleted",
+        "terms_and_conditions" : "Terms and Conditions",
+        "about_site" : "About the site",
+        "message" : "Message",
+        "please_enter_message" : "Please enter the message",
+        "send" : "Send",
+        "complaints_suggestions" : "Complaints and suggestions",
+        "complaintsuggestion" : "Complaints/suggestion",
+        "please_enter_complaints" : "Please enter the complaint/suggestion",
+        "wallet" : "Wallet",
+        "current_balance" : "Current balance",
+        "SR" : "SR",
+        "charge_balance" : "charge the balance",
+        "notifications" : "Notifications",
+        "no_notifications" : "No notifications",
+        "delete_all" : "Delete all",
+        "Saving_changes_success" : "Changes have been saved successfully"
     }
 
 }

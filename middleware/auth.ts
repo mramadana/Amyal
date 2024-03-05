@@ -7,5 +7,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
       
       if (to.path === '/myorders') {
         return '/myorders/pending';
-      } 
+      };
+      
   })

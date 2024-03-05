@@ -16,7 +16,7 @@ export default defineNuxtConfig({
         { name: "description", content: "موقع اميال لتاجير السيارات" },
       ],
       link: [
-        // { rel: "icon", type: "image/x-icon", href: "/.png" },
+        { rel: "icon", type: "image/x-icon", href: "/logo.png" },
       ],
     },
   },
@@ -38,6 +38,7 @@ export default defineNuxtConfig({
     "primevue/resources/primevue.min.css",
     "~/assets/css/style.scss",
   ],
+
 
   primevue: {
     usePrimeVue: true,

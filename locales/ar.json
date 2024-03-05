@@ -151,7 +151,30 @@
         "enter_current_password_new_email": "برجاء ادخال كلمة المرور الحالية و البريد الالكتروني الجديد",
         "activation_code" : "كود التفعيل",
         "Please_activation_email" : "برجاء ادخال كود التفعيل المرسل إليك عبر البريد الالكتروني",
-        "email_changed_successfully" : "تم تغييرالبريد الالكتروني بنجاح"
+        "email_changed_successfully" : "تم تغييرالبريد الالكتروني بنجاح",
+        "enter_old_password_new_password" : "برجاء ادخال كلمة المرور القديمة و الجديدة",
+        "password_changed_successfully" : "تم تغيير كلمة المرور بنجاح",
+        "old_password" : "كلمة المرور القديمة",
+        "notifications_settings" : "اعدادات الاشعارات",
+        "Activate_notifications" : "تفعيل الاشعارات",
+        "delete" : "حذف",
+        "account_deleted" : "تم حذف الحساب",
+        "terms_and_conditions" : "الشروط والإحكام",
+        "about_site" : "عن الموقع",
+        "message" : "الرسالة",
+        "please_enter_message" : "برجاء كتابة الرساله",
+        "send" : "إرسال",
+        "complaints_suggestions" : "الشكاوى والمقترحات",
+        "complaintsuggestion" : "الشكوى/الاقتراح",
+        "please_enter_complaints" : "برجاء كتابة الشكوى/الاقتراح",
+        "wallet" : "المحفظة",
+        "current_balance" : "رصيدك الحالى",
+        "SR" : "ريال سعودي",
+        "charge_balance" : "شحن رصيد",
+        "notifications" : "الاشعارات",
+        "no_notifications" : "لا يوجد اشعارات",
+        "delete_all" : "حذف الكل",
+        "Saving_changes_success" : "تم حفظ التعديلات بنجاح"
     }
 
 }

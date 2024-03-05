@@ -844,11 +844,6 @@ input.p-inputtext.p-component {
   }
 }
 
-.main-disc {
-  font-size: 14px;
-  color: #878787;
-}
-
 
 .inner-app {
   overflow: hidden;
@@ -1012,6 +1007,11 @@ input.p-inputtext.p-component {
   }
 }
 
+.normal {
+  font-weight: 500;
+  font-size: 15px;
+}
+
 .main-title {
   font-size: 17px;
   font-weight: 600;
@@ -1030,6 +1030,10 @@ input.p-inputtext.p-component {
     @media (max-width: $screen-xs) {
       font-size: 17px;
     }
+  }
+  
+  &.sm {
+    font-size: 14px;
   }
 }
 
@@ -1099,6 +1103,7 @@ input.p-inputtext.p-component {
 
 .restore-image {
   max-height: 220px;
+  width: 250px;
   @media (max-width: $screen-xs) {
      max-height: 150px;
   }
@@ -1608,6 +1613,27 @@ input.p-inputtext.p-component {
       .p-rating-icon {
         color: var(--main);
       }
+    }
+  }
+}
+
+.deleteAll-btn {
+  position: absolute;
+  @include dir-right(0);
+  padding: 10px;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--main);
+  border-radius: 5px;
+  font-size: 15px;
+  gap: 10px;
+  top: 0;
+  color: #EC2F2F;
+  .resp-text {
+    @media (max-width: $screen-xs) {
+      display: none;
     }
   }
 }

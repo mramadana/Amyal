@@ -121,7 +121,7 @@
                                     </span>
                                     <p class="check-text hint">
                                     {{ $t("Auth.agree_to") }}
-                                    <NuxtLink to="" target="_blank" class="anchor">
+                                    <NuxtLink to="/terms" target="_blank" class="anchor">
                                         {{ $t("Auth.terms_and_conditions") }}
                                     </NuxtLink >
                                     </p>

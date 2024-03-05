@@ -26,63 +26,6 @@
                                 <input type="text" class="custum-input-icon" name="name" v-model="name" :placeholder="$t('Auth.enter_username')">
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <label class="label">
-                                {{ $t('Auth.mobile_number') }}
-                                <span class="hint-red">*</span>
-                            </label>
-                            <div class="with_cun_select">
-                                <div class="main_input">
-                                    <i class="fas fa-mobile-alt sm-icon"></i>
-                                    <input type="number" class="custum-input-icon" name="name" v-model="name" :placeholder="$t('Auth.please_mobile_number')">
-                                </div>
-                                <div class="card d-flex justify-content-center dropdown_card">
-                                <Dropdown
-                                v-model="selectedCountry"
-                                :options="countries"
-                                optionLabel="name"
-                                >
-                                <template #value="slotProps">
-                                    <div v-if="slotProps.value" class="flex-group-me">
-                                    <img
-                                        :alt="slotProps.value.label"
-                                        :src="slotProps.value.image"
-                                        :class="`mr-2 flag flag-${slotProps.value.key.toLowerCase()}`"
-                                        style="width: 24px"
-                                    />
-                                    <div>{{ slotProps.value.key }}</div>
-                                    </div>
-                                    <span v-else>
-                                    {{ slotProps.placeholder }}
-                                    </span>
-                                </template>
-                                <template #option="slotProps">
-                                    <div class="flex-group-me">
-                                    <img
-                                        :alt="slotProps.option.label"
-                                        :src="slotProps.option.image"
-                                        :class="`mr-2 flag flag-${slotProps.option.key.toLowerCase()}`"
-                                        style="width: 24px"
-                                    />
-                                    <div>{{ slotProps.option.key }}</div>
-                                    </div>
-                                </template>
-                                </Dropdown>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="label">
-                                {{ $t('Auth.email') }}
-                                <span class="hint-red">*</span>
-                            </label>
-                            <div class="main_input">
-                                <i class="fas fa-envelope sm-icon"></i>
-                                <input type="email" class="custum-input-icon" name="email" v-model="email" :placeholder="$t('Auth.please_enter_email')">
-                            </div>
-                        </div>
                         
                         
                         <button class="custom-btn w-100 mt-5">{{ $t('Global.Saving_changes') }}</button>
@@ -90,18 +33,27 @@
                 </div>
             </form>
         </div>
+
+        <Dialog v-model:visible="successfullyChange" modal class="custum_dialog_width without-close" :draggable="false" >
+            <div class="text-center">
+                <img src="@/assets/images/check.png" alt="check-img" class="check-img">
+                <h3 class="main-title bold mb-4">{{ $t('Global.Saving_changes_success') }}</h3>
+            </div>
+        </Dialog>
     </div>
 </template>
 
 <script>
 definePageMeta({
     name: "Home.edit_profile",
+    middleware: 'auth',
 });
 import dropdown_img from '@/assets/images/Flag.webp';
 import dropdown_img_1 from '@/assets/images/messi.gif';
 export default {
     data() {
         return {
+            successfullyChange: false,
             uploadedImage: [],
             selectedCountry: {
                     key: "+966",
@@ -128,9 +80,14 @@ export default {
             this.uploadedImage = images;
         },
 
-        // submitData() {
-            
-        // }
-    }
+        submitData() {
+            this.successfullyChange = true;
+            setTimeout(() => {
+                this.successfullyChange = false;
+                this.$router.push('/settings');
+            }, 1000);
+
+        }
+    },
 }
 </script>

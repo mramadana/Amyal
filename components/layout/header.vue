@@ -46,57 +46,107 @@
             </div>
             <div class="nav-header">
                 <div class="container">
-                  <div class="inner">
-                    <div class="logo">
-                      <img src="@/assets/images/logo.png" alt="logo" @click="emitEvent" />
-                    </div>
-                      <ul class="nav-links" :class="{ active: navLinksActive }">
-                        <li>
-                          <NuxtLink to="/" class="link">
-                              {{ $t("Home.home") }}
-                          </NuxtLink>
-                        </li>
-    
-                        <li>
-                          <NuxtLink to="" class="link">
-                              {{ $t("Home.about_site") }}
-                          </NuxtLink>
-                        </li>
-                        
-                        <li>
-                          <NuxtLink to="" class="link">
-                              {{ $t("Home.connect_us") }}
-                          </NuxtLink>
-                        </li>
-      
-                      </ul>
-      
-                      <div class="left">
+                    <div class="inner">
+                        <div class="logo">
+                            <img
+                                src="@/assets/images/logo.png"
+                                alt="logo"
+                                @click="emitEvent"
+                            />
+                        </div>
+                        <ul
+                            class="nav-links"
+                            :class="{ active: navLinksActive }"
+                        >
+                            <li>
+                                <NuxtLink to="/" class="link">
+                                    {{ $t("Home.home") }}
+                                </NuxtLink>
+                            </li>
 
-                            <button class="dropdown dropdown-profile" v-if="showLogo">
-                                <div class="profile-hint" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="@/assets/images/profile_img.jpg" alt="user-image" class="user-image">
+                            <li>
+                                <NuxtLink to="/aboutSite" class="link">
+                                    {{ $t("Home.about_site") }}
+                                </NuxtLink>
+                            </li>
+
+                            <li>
+                                <NuxtLink to="/connectUs" class="link">
+                                    {{ $t("Home.connect_us") }}
+                                </NuxtLink>
+                            </li>
+                        </ul>
+
+                        <div class="left">
+                            <button
+                                class="dropdown dropdown-profile"
+                                v-if="showLogo"
+                            >
+                                <div
+                                    class="profile-hint"
+                                    id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                >
+                                    <img
+                                        src="@/assets/images/profile_img.jpg"
+                                        alt="user-image"
+                                        class="user-image"
+                                    />
                                     <p class="user-name">أحمد محمد</p>
                                 </div>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <nuxt-link class="dropdown-item" to="/profile">{{ $t("Home.profile_personly") }}</nuxt-link>
-                                    <nuxt-link class="dropdown-item" to="/settings">{{ $t("Home.settings") }}</nuxt-link>
-                                    <nuxt-link class="dropdown-item" to="">{{ $t("Home.portfolio") }}</nuxt-link>
-                                    <nuxt-link class="dropdown-item" to="/myorders">{{ $t("Home.myrequests") }}</nuxt-link>
-                                    <button type="button" @click="logoutDialog = true" class="dropdown-item">{{ $t("Home.logout") }}</button>
+                                <ul
+                                    class="dropdown-menu"
+                                    aria-labelledby="dropdownMenuButton1"
+                                >
+                                    <nuxt-link
+                                        class="dropdown-item"
+                                        to="/profile"
+                                        >{{
+                                            $t("Home.profile_personly")
+                                        }}</nuxt-link
+                                    >
+                                    <nuxt-link
+                                        class="dropdown-item"
+                                        to="/settings"
+                                        >{{ $t("Home.settings") }}</nuxt-link
+                                    >
+                                    <nuxt-link
+                                        class="dropdown-item"
+                                        to="/Wallet"
+                                        >{{ $t("Home.portfolio") }}</nuxt-link
+                                    >
+                                    <nuxt-link
+                                        class="dropdown-item"
+                                        to="/myorders"
+                                        >{{ $t("Home.myrequests") }}</nuxt-link
+                                    >
+                                    <button
+                                        type="button"
+                                        @click="logoutDialog = true"
+                                        class="dropdown-item"
+                                    >
+                                        {{ $t("Home.logout") }}
+                                    </button>
                                     <!-- <nuxt-link class="dropdown-item" to="/Auth/login">{{ $t("Home.logout") }}</nuxt-link> -->
                                 </ul>
                             </button>
 
-                            <Nuxt-link to="/Auth/login" class="notification" v-if="showLogo">
+                            <Nuxt-link
+                                to="/notifications"
+                                class="notification"
+                                v-if="showLogo"
+                            >
                                 <div class="notif-icon" :data-number="4">
                                     <i class="fas fa-bell"></i>
                                 </div>
                             </Nuxt-link>
 
                             <nuxt-link class="btn-login" to="/Auth/login">
-                            <i class="fas fa-sign-in-alt sign-icon"></i>
-                            <span class="login-text">{{ $t("Auth.login") }}</span>
+                                <i class="fas fa-sign-in-alt sign-icon"></i>
+                                <span class="login-text">{{
+                                    $t("Auth.login")
+                                }}</span>
                             </nuxt-link>
                             <button
                                 class="nav-btn"
@@ -105,24 +155,50 @@
                             >
                                 <span></span><span></span><span></span>
                             </button>
-                            <div class="nav-overlay" @click="handleOverlayClick" :class="{ show: navOverlayShow }"
-                        ></div>
-                      </div>
-                  </div>
+                            <div
+                                class="nav-overlay"
+                                @click="handleOverlayClick"
+                                :class="{ show: navOverlayShow }"
+                            ></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>
 
         <!-- logout Dialog -->
-        <Dialog v-model:visible="logoutDialog" modal class="custum_dialog_width" :draggable="false">
-                <div class="text-center">
-                    <img src="@/assets/images/noun_warning.png" alt="check-img" class="check-img">
-                    <h1 class="main-title bold mb-4">{{ $t('Global.congratulations_request') }}</h1>
-                    <div class="section-btns mt-5">
-                        <button type="button" class="custom-btn sm d-inline-flex" @click="logoutDialog = false">{{ $t('Home.retreat') }}</button>
-                        <button type="button" class="custom-btn logout sm d-inline-flex" @click="logout">{{ $t('Home.logout') }}</button>
-                    </div>
+        <Dialog
+            v-model:visible="logoutDialog"
+            modal
+            class="custum_dialog_width"
+            :draggable="false"
+        >
+            <div class="text-center">
+                <img
+                    src="@/assets/images/noun_warning.png"
+                    alt="check-img"
+                    class="check-img"
+                />
+                <h1 class="main-title bold mb-4">
+                    {{ $t("Global.congratulations_request") }}
+                </h1>
+                <div class="section-btns mt-5">
+                    <button
+                        type="button"
+                        class="custom-btn sm d-inline-flex"
+                        @click="logoutDialog = false"
+                    >
+                        {{ $t("Home.retreat") }}
+                    </button>
+                    <button
+                        type="button"
+                        class="custom-btn logout sm d-inline-flex"
+                        @click="logout"
+                    >
+                        {{ $t("Home.logout") }}
+                    </button>
                 </div>
+            </div>
         </Dialog>
     </div>
 </template>
@@ -138,7 +214,7 @@ export default {
             navLinksActive: false,
             navOverlayShow: false,
             isActive: false,
-            showLogo: true
+            showLogo: true,
         };
     },
 
@@ -162,22 +238,21 @@ export default {
         },
         switchLang(newLang) {
             if (newLang !== localStorage.getItem("locale")) {
-            localStorage.setItem("locale", newLang);
-            location.reload();
+                localStorage.setItem("locale", newLang);
+                location.reload();
             }
         },
 
-
         handleClick() {
-          this.navBtnActive = true;
-          this.navLinksActive = true;
-          this.navOverlayShow = true;
+            this.navBtnActive = true;
+            this.navLinksActive = true;
+            this.navOverlayShow = true;
         },
 
         handleOverlayClick() {
-          this.navBtnActive = false;
-          this.navLinksActive = false;
-          this.navOverlayShow = false;
+            this.navBtnActive = false;
+            this.navLinksActive = false;
+            this.navOverlayShow = false;
         },
     },
 
@@ -192,56 +267,49 @@ export default {
 
     created() {
         // Check if the current route is within the Auth section
-        if (this.$route.path.startsWith('/Auth')) {
-        // If yes, hide it
-        this.showLogo = false;
+        if (this.$route.path.startsWith("/Auth")) {
+            // If yes, hide it
+            this.showLogo = false;
         }
     },
 
     watch: {
-        $route(to, from) {
+        $route(to) {
             // Watch for when the route changes close the side menu
             this.handleOverlayClick();
 
-            // Check if the current route is not the home page
-            // Check if the current route is within the Auth section
-
-           console.log(this.$route.path);
-            if (this.$route.path.includes('Auth')) {
-            // If yes, hide the logo
-            setTimeout(() => {
+            if (to.path.includes("/Auth")) {
+                // If yes, hide the logo
                 this.showLogo = false;
-            }, 10);
             } else {
-            // Otherwise, show the logo
-            setTimeout(() => {
+                // // Otherwise, show the logo
                 this.showLogo = true;
-            }, 10)
+                
             }
-      },
+        },
     },
 
     computed: {
-    headerClass() {
-      return {
-        'add-margin': this.shouldAddMarginBottom,
-      };
-    },
-    shouldAddMarginBottom() {
-      // Check if the current route is not the home page
-      return this.$route.path !== '/';
-    },
+        headerClass() {
+            return {
+                "add-margin": this.shouldAddMarginBottom,
+            };
+        },
+        shouldAddMarginBottom() {
+            // Check if the current route is not the home page
+            return this.$route.path !== "/";
+        },
     },
 };
 </script>
 
 <style lang="scss">
-    .add-margin {
-        margin-bottom: 40px;
-    }
-    .defaultLayout {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
+.add-margin {
+    margin-bottom: 40px;
+}
+.defaultLayout {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
 </style>

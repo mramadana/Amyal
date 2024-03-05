@@ -16,8 +16,8 @@
                             <h4 class="foot-title">{{ $t("Home.quick_links") }}</h4>
                             <div class="links">
                                 <NuxtLink to="/" class="link">{{ $t("Home.home") }}</NuxtLink>
-                                <NuxtLink to="" class="link">{{ $t("Home.complaints_and_suggestions") }}</NuxtLink>
-                                <NuxtLink to="" class="link">{{ $t("Home.terms_and_conditions") }}</NuxtLink>
+                                <NuxtLink to="/Complaints" class="link">{{ $t("Home.complaints_and_suggestions") }}</NuxtLink>
+                                <NuxtLink to="/terms" class="link">{{ $t("Home.terms_and_conditions") }}</NuxtLink>
                             </div>
                         </div>
 
