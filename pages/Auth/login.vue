@@ -103,8 +103,10 @@
 </template>
 
 <script>
+
 definePageMeta({
     name: "Auth.login",
+    middleware: "auth",
 });
 import dropdown_img from '@/assets/images/Flag.webp';
 import dropdown_img_1 from '@/assets/images/messi.gif';

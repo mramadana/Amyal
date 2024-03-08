@@ -80,7 +80,7 @@
                         <div class="left">
                             <button
                                 class="dropdown dropdown-profile"
-                                v-if="showLogo"
+                                v-if="showLogo === 'false'"
                             >
                                 <div
                                     class="profile-hint"
@@ -135,7 +135,7 @@
                             <Nuxt-link
                                 to="/notifications"
                                 class="notification"
-                                v-if="showLogo"
+                                v-if="showLogo === 'false'"
                             >
                                 <div class="notif-icon" :data-number="4">
                                     <i class="fas fa-bell"></i>
@@ -203,6 +203,26 @@
     </div>
 </template>
 
+
+<script setup>
+    import nuxtStorage from "nuxt-storage";
+    const route = useRoute();
+    const showLogo = ref("");
+    onMounted(() => {
+    if (route.path.includes("/Auth") == false) {
+    showLogo.value = "false";
+    }
+    });
+
+    watch(
+    () => route.path,
+    () => {
+    showLogo.value = nuxtStorage.localStorage.getData("token");
+    console.log(showLogo.value);
+    }
+    );
+</script>
+
 <script>
 export default {
     data() {
@@ -214,7 +234,7 @@ export default {
             navLinksActive: false,
             navOverlayShow: false,
             isActive: false,
-            showLogo: true,
+            // showLogo: true,
         };
     },
 
@@ -265,29 +285,29 @@ export default {
         }
     },
 
-    created() {
-        // Check if the current route is within the Auth section
-        if (this.$route.path.startsWith("/Auth")) {
-            // If yes, hide it
-            this.showLogo = false;
-        }
-    },
+    // created() {
+    //     // Check if the current route is within the Auth section
+    //     if (this.$route.path.startsWith("/Auth")) {
+    //         // If yes, hide it
+    //         this.showLogo = false;
+    //     }
+    // },
 
-    watch: {
-        $route(to) {
-            // Watch for when the route changes close the side menu
-            this.handleOverlayClick();
+    // watch: {
+    //     $route(to) {
+    //         // Watch for when the route changes close the side menu
+    //         this.handleOverlayClick();
 
-            if (to.path.includes("/Auth")) {
-                // If yes, hide the logo
-                this.showLogo = false;
-            } else {
-                // // Otherwise, show the logo
-                this.showLogo = true;
+    //         if (to.path.includes("/Auth")) {
+    //             // If yes, hide the logo
+    //             this.showLogo = false;
+    //         } else {
+    //             // // Otherwise, show the logo
+    //             this.showLogo = true;
                 
-            }
-        },
-    },
+    //         }
+    //     },
+    // },
 
     computed: {
         headerClass() {

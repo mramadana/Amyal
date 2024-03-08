@@ -13,31 +13,36 @@
                 </button>
             </h1>
 
-              <div v-for="(result, index) in notifications" :key="result.index">
-                <div class="layout-form sm">
-                  <div class="notificatin-card">
-                      <div class="d-flex">
-                          <img :src="result.image" alt="notificatin-img" class="notificatin-img">
-                          <div class="text text-start">
-                              <h1 class="main-title normal"> {{ result.name }}</h1>
-                              <div class="d-flex align-items-center gap-2">
-                                  <i class="far fa-clock main-disc"></i>
-                                  <div>
-                                      <span class="main-disc normal">منذ :</span>
-                                      &nbsp;
-                                      <span class="main-disc normal">{{ result.time }}</span>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                      <i class="far fa-trash-alt trash-icon" @click="removenotifation(index)"></i>
+            <transition-group name="fade">
+
+                <div v-for="(result, index) in notifications" :key="result.index">
+                  <div class="layout-form sm">
+                    <div class="notificatin-card">
+                        <div class="d-flex">
+                            <img :src="result.image" alt="notificatin-img" class="notificatin-img">
+                            <div class="text text-start">
+                                <h1 class="main-title normal"> {{ result.name }}</h1>
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="far fa-clock main-disc"></i>
+                                    <div>
+                                        <span class="main-disc normal">منذ :</span>
+                                        &nbsp;
+                                        <span class="main-disc normal">{{ result.time }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <i class="far fa-trash-alt trash-icon" @click="removenotifation(index)"></i>
+                    </div>
                   </div>
                 </div>
-              </div>
+    
+                <div v-if="notifications.length == 0">
+                  {{ $t("Global.no_notifications") }}
+                </div>
+                
+            </transition-group>
 
-              <div v-if="notifications.length == 0">
-                {{ $t("Global.no_notifications") }}
-              </div>
           </div>
       </div>
     </div>

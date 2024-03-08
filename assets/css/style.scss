@@ -966,6 +966,9 @@ input.p-inputtext.p-component {
     font-weight: bold;
     border-radius: 15px;
     border: 1px solid #DBDBDB;
+  }
+
+  .card-setting {
     i {
       #{$ltr} & {
         transform: scale(-1);

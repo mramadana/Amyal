@@ -4,7 +4,7 @@
         <div class="container">
             <div class="layout-form custom-width lg">
                 <h1 class="main-title bold lg mb-5">{{ $t("Home.settings") }}</h1>
-                <div class="row justify-content-center">
+                <div class="row justify-content-center card-setting">
                     <div class="col-12 col-md-11">
     
                         <router-link class="layout-form sm" to="/editProfile">
