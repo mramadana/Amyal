@@ -10,6 +10,31 @@
         "activation_code" : "Activation code"
     },
 
+    "validation": {
+        "image": "Image required",
+        "name": "Name Is required",
+        "phone": "Please enter phone number",
+        "email": "Please enter a valid Email",
+        "password": "Please enter your password",
+        "confirmPassword": "The password does not match",
+        "search": "Search word is required",
+        "newPassword": "Please enter your new password",
+        "conditions": "You must agree to the terms and conditions",
+        "code": "Please enter activation code",
+        "title": "Please enter Message Title",
+        "content": "Please enter Message",
+        "requiresAuth": "Please sign in first",
+        "copy": "The link was copied successfully",
+        "retrieval_reason": "Return reason is required",
+        "returnImg": "Return photos are required",
+        "products": "Select the products to be returned",
+        "rental_period": "Rental period is required",
+        "receive_dateValid": "Receive date is required",
+        "complaint": "Please enter your complaint",
+        "rate": "Rate is required",
+        "message": "Message is required"
+      },
+
     "Auth": {
         "login": "Login",
         "mobile_and_password" : "Enter your mobile number and password",
@@ -173,7 +198,39 @@
         "notifications" : "Notifications",
         "no_notifications" : "No notifications",
         "delete_all" : "Delete all",
-        "Saving_changes_success" : "Changes have been saved successfully"
+        "Saving_changes_success" : "Changes have been saved successfully",
+        "sure_delete_account": "Are you sure you want to delete your account",
+        "delete_account_info": "If the section is deleted, all data related to the branch will be deleted in addition to the products",
+        "imgs": "No images yet",
+        "brand": "Brand",
+        "no_products": "No products yet",
+        "rent": "Rent",
+        "daily_rent": "Daily rent",
+        "monthly_rent": "Monthly rent",
+        "yearly_rent": "Yearly rent",
+        "car_brand": "Car brand",
+        "car_model": "Car model",
+        "manufacturing_year": "Manufacturing year",
+        "no_rates": "No rates yet",
+        "tamm_platform": "TAMM graphical platform",
+        "value_added_tax": "Value added tax",
+        "total_price": "Total price",
+        "month": "Month",
+        "number_rental_days": "Number of rental days",
+        "driver_fees": "Driver fees"
+    },
+
+    "order": {
+        "car_name": "Car name",
+        "driver": "Driver",
+        "day": "Day",
+        "order_status": "Order status",
+        "date_of_order": "Date of order",
+        "Riyadh": "Riyadh",
+        "your_rating": "Your rating",
+        "since": "since",
+        "order_rejected": "This request was rejected by the TAMM platform",
+        "enter_amount": "Enter amount"
     }
 
 }

@@ -117,6 +117,106 @@ margin: 0;
   opacity: 0;
 }
 
+/********************* Prime Toast *********************/
+.p-toast {
+  max-width: calc(100% - 20px) !important;
+  @include dir-left(10px !important);
+  z-index: 2005 !important;
+  .p-toast-message {
+    margin-bottom: 8px;
+    border: 6px solid #1ea97c;
+    #{$ltr} & {
+      border-width: 0 0 0 6px !important;
+    }
+
+    #{$rtl} & {
+      border-width: 0 6px 0 0 !important;
+    }
+
+    .p-toast-message-content {
+      gap: 12px !important;
+      align-items: center !important;
+
+      @media screen and (max-width: $screen-xs) {
+        padding: 1rem 8px !important;
+      }
+
+      .p-toast-message-icon {
+        width: 20px !important;
+        height: 20px !important;
+
+        @media screen and (max-width: $screen-xs) {
+          width: 16px !important;
+          height: 16px !important;
+        }
+      }
+
+      .p-toast-message-text {
+        font-family: fontDemi;
+        margin: 0 !important;
+        font-size: 13px;
+
+        .p-toast-summary {
+          @media screen and (max-width: $screen-xs) {
+            font-size: 12px !important;
+          }
+        }
+
+        .p-toast-detail {
+          &:empty {
+            display: none;
+          }
+        }
+      }
+    }
+
+    &.p-toast-message-error {
+      background: #ffe7e6 !important;
+      border-color: #ff5757 !important;
+      color: #ff5757;
+    }
+  }
+}
+
+.spinner-border-sm {
+  margin-inline-start: 10px;
+}
+
+.dir-slider {
+  direction: ltr !important;
+}
+
+.login_logo {
+  max-width: 240px;
+
+  &.sm {
+    max-width: 170px;
+
+    @media screen and (max-width: $screen-xs) {
+      max-width: 140px;
+    }
+  }
+
+  &.res {
+    @media screen and (max-width: $screen-xs) {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.1 !important;
+      z-index: -1;
+    }
+  }
+
+  &.position {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+  }
+}
+
 
 
 

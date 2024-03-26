@@ -1,16 +1,9 @@
-
-<script setup>
-definePageMeta({
-    middleware: 'auth',
-    name: "Titles.home",
-});
-</script>
 <template>
     <div>
         <main>
             <!-- start to main slider  -->
             
-            <HomeMainSlider :products="products" class="mb-5"/>
+            <HomeMainSlider :slider="sliderHome" :loading="loading" class="mb-5"/>
             
             <!-- start to renting cars  -->
             <div class="renting-cars mb-5">
@@ -19,14 +12,14 @@ definePageMeta({
                         <div class="mb-5 tab-btns">
 
                             <label class="custom-radio custom-radio-2">
-                                <input type="radio" name="rental" value="without_driver" v-model="rentalOption" class="d-none">
+                                <input type="radio" name="rental" value="1" v-model="rentalOption" class="d-none">
                                 <div class="radio-content low-padding">
                                     <p>{{ $t('Home.without_driver') }}</p>
                                 </div>
                             </label>
 
                             <label class="custom-radio custom-radio-2">
-                                <input type="radio" name="rental" value="with_driver" v-model="rentalOption" class="d-none">
+                                <input type="radio" name="rental" value="0" v-model="rentalOption" class="d-none">
                                 <div class="radio-content low-padding">
                                     <p>{{ $t('Home.with_driver') }}</p>
                                 </div>
@@ -50,7 +43,7 @@ definePageMeta({
                                                 {{$t('Home.rental_period')}}
                                                 <span class="hint-red">*</span>
                                             </label>
-                                            <input type="number" class="main_input" v-model="rentalPeriod" :placeholder="$t('Home.choose_rental_period')">
+                                            <input type="number" class="main_input validInputs" valid="rental_period" name="rental_period" v-model="rentalPeriod" :placeholder="$t('Home.choose_rental_period')">
                                         </div>
                                     </div>
                                 </div>
@@ -58,23 +51,139 @@ definePageMeta({
                         </div>
     
                         <!-- start to choose cars  -->
-                        <HomeChooseCars :cars="cars" @carSelected="handleCarSelected"/>
+                        <HomeChooseCars :cars="cars" :loading="loading" @carSelected="handleCarSelected"/>
     
-                        <div v-if="selectedCarId" class="col-12 col-md-8 mr-auto d-flex justify-content-center">
-                            <!-- <NuxtLink to="/cars" class="custom-btn lg bold">{{$t('Home.continuation')}}</NuxtLink> -->
+                        <div v-if="selectedCarId && rentalType != null" class="col-12 col-md-8 mr-auto d-flex justify-content-center">
                             <button type="submit" class="custom-btn lg bold">{{$t('Home.continuation')}}</button>
                         </div>
+
+                        <!-- <div class="col-12 col-md-8 mr-auto d-flex justify-content-center">
+                            <button type="submit" :disabled="!selectedCarId && rentalType == null" class="custom-btn lg bold disabled-btn">{{$t('Home.continuation')}}</button>
+                        </div> -->
                     </form>
                 </div>
             </div>
     
             <!-- start to AppStore section -->
-            <homeAppStore/>
+            <homeAppStore :banner_home="banner_home" :loading="loading" />
         </main>
     </div>
 </template>
 
-<script>
+<script setup>
+
+definePageMeta({
+    name: "Titles.home",
+});
+
+
+// response
+const { response } = responseApi();
+// axios
+const axios = useApi();
+const loading = ref(true);
+const banner_home = ref('');
+const rentalOption = ref(1);
+const rentalPeriod = ref(null);
+const selectedCarId = ref(false);
+const rentalType = ref(null);
+const rentals = ref([]);
+const errors = ref([]);
+
+import { useI18n } from 'vue-i18n';
+
+// Toast
+const { successToast, errorToast } = toastMsg();
+const { t } = useI18n({ useScope: 'global' }); 
+const sliderHome = ref([]);
+
+const cars = ref([]);
+
+const handleCarSelected = (id) => {
+    selectedCarId.value = id;
+};
+
+// validation Function
+const validate = () => {
+    let allInputs = document.querySelectorAll('.validInputs');
+    for (let i = 0; i < allInputs.length; i++) {
+        if (allInputs[i].value === '') {
+            errors.value.push(t(`validation.${allInputs[i].getAttribute('valid')}`));
+        }
+    }
+}
+
+const submitData = () => {
+
+    validate();
+
+    if (errors.value.length) {
+        errorToast(errors.value[0]);
+        loading.value = false;
+        errors.value = [];
+    } else {
+        // Create an object to hold all form data
+        const formData = {
+            rentalOption: rentalOption.value,
+            rentalPeriod: rentalPeriod.value,
+            rentalType: rentalType.value,
+            selectedCarId: selectedCarId.value
+        
+        };
+        
+        // Convert the object to a JSON string
+        const formDataString = JSON.stringify(formData);
+        
+        // Save the JSON string into localStorage
+        localStorage.setItem('formData', formDataString);
+        
+        console.log(formDataString, "formDataString");
+        
+        useRouter().push('/cars');
+
+    }
+
+
+};
+
+// get home Data 
+
+const getData = async () => {
+    loading.value = true;
+  await axios.get('home').then(res => {
+    if (response(res) == "success") {
+       sliderHome.value = res.data.data.slider;
+       cars.value = res.data.data.car_categories;
+       banner_home.value = res.data.data.website_banner;
+    }
+    loading.value = false;
+  }).catch(err => console.log(err));
+};
+
+// get rental type
+
+const getrental = async () => {
+    loading.value = true;
+  await axios.get('rental-types').then(res => {
+    if (response(res) == "success") {
+        rentals.value = res.data.data;
+    }
+    loading.value = false;
+  }).catch(err => console.log(err));
+};
+
+onMounted(() => {
+  getData();
+  getrental();
+});
+
+</script>
+
+
+
+<!-- optional -->
+
+<!-- <script>
 
 // image for test slider
 import image_1 from '@/assets/images/1.png';
@@ -167,7 +276,9 @@ export default {
 
     }
 }
-</script>
+</script> -->
+
+
 <style lang="scss">
     .custom-radio-2 {
         input:checked ~ .radio-content {
@@ -177,6 +288,16 @@ export default {
     }
     .low-padding {
         padding: 10px;
+    }
+
+    .disabled-btn {
+        &:disabled {
+            cursor: not-allowed;
+            background-color: rgba(229, 229, 229) !important;
+            border-color: rgba(229, 229, 229) !important;
+            box-shadow: none;
+            color: #000;
+        }
     }
 
 </style>

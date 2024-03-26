@@ -5,7 +5,6 @@
 </script>
 <template>
     <div class="container">
-        <h1 class="main-title bold lg mb-5">{{ $t("Titles.current") }}</h1>
-        <OrdersMainOrderContent orderUrl="current"/>
+        <OrdersMainOrderContent ordersName="current-orders"/>
     </div>
 </template>

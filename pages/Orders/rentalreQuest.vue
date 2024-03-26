@@ -3,7 +3,7 @@
         <div class="container">
             <div class="layout-form custom-width lg">
                 <h1 class="main-title bold lg mb-4">{{ $t("Global.rental_request") }}</h1>
-                <form @submit.prevent="submitData">
+                <form @submit.prevent="submitData" ref="createOrderForm">
                     <div class="row">
                         <div class="col-12 col-md-8 mr-auto">
                             
@@ -18,12 +18,15 @@
                                         :placeholder="$t('Global.enter_received_date')"
                                         dateFormat="dd/mm/yy"
                                         :minDate="today"
+                                        :disabledDates="reservedDates"
+                                        class="validInputs"
+                                        valid="password"
                                     />
                                     <button class="static-btn" type="button"><i class="far fa-calendar-alt icon"></i></button>
                                 </div>
                             </div>
     
-                            <div class="form-group" @click="time_receipt_dialog = true">
+                            <div class="form-group" @click="time_receipt_dialogFun">
                                 <label class="label">
                                     {{ $t('Global.time_receipt') }}
                                     <span class="hint-red">*</span>
@@ -56,7 +59,7 @@
                                     <span class="hint-red">*</span>
                                 </label>
                                 <div class="card flex justify-content-center with_icon position-relative pointer">
-                                    <Calendar id="calendar-timeonly" v-model="time" timeOnly :placeholder="$t('Global.return_time')"/>
+                                    <Calendar id="calendar-timeonly" v-model="receive_time" timeOnly :placeholder="$t('Global.return_time')"/>
                                     <button class="static-btn" type="button"><i class="fa-regular fa-clock"></i></button>
                                 </div>
                             </div>
@@ -70,7 +73,7 @@
                                     <span class="hint-red">*</span>
                                 </label>
                                 <div class="main_input with_icon">
-                                    <input type="text" class="location_input" name="location" v-model="location_3" label="Show" icon="pi pi-external-link" @click="place_of_deliveryDialog_3 = true" readonly>
+                                    <input type="text" class="location_input" v-model="location_3" label="Show" icon="pi pi-external-link" @click="place_of_deliveryDialog_2 = true" readonly>
                                     <button class="static-btn" type="button"><i class="fas fa-map-marker-alt"></i></button>
                                 </div>
                             </div>
@@ -103,9 +106,9 @@
                                     <span class="hint-red">*</span>
                                 </label>
                                 <div class="input_auth without-edit">
-                                    <img src="@/assets/images/noun_upload.png" alt="default-img" :class="{'hidden-default' : uploadedImage.length > 0, 'default-class': true}">
+                                    <img src="@/assets/images/noun_upload.png" loading="lazy" alt="default-img" :class="{'hidden-default' : uploadedImage.length > 0, 'default-class': true}">
                                     <span>{{ $t('Global.attach_photo') }}</span>
-                                    <GlobalImgUploader acceptedFiles="image/*" :newImages="logo" name="logo" @uploaded-images-updated="updateUploadedImages_1" />
+                                    <GlobalImgUploader acceptedFiles="image/*" name="license_image" @uploaded-images-updated="updateUploadedImages_1" />
                                 </div>
                             </div>
     
@@ -115,9 +118,9 @@
                                     <span class="hint-red">*</span>
                                 </label>
                                 <div class="input_auth without-edit">
-                                    <img src="@/assets/images/noun_upload.png" alt="default-img" :class="{'hidden-default' : uploadedImage.length > 0, 'default-class': true}">
+                                    <img src="@/assets/images/noun_upload.png" loading="lazy" alt="default-img" :class="{'hidden-default' : uploadedImage.length > 0, 'default-class': true}">
                                     <span>{{ $t('Global.attach_photo') }}</span>
-                                    <GlobalImgUploader acceptedFiles="image/*" :newImages="logo" name="logo" @uploaded-images-updated="updateUploadedImages_2" />
+                                    <GlobalImgUploader acceptedFiles="image/*" name="identity_image" @uploaded-images-updated="updateUploadedImages_2" />
                                 </div>
                             </div>
 
@@ -126,7 +129,7 @@
                                     {{ $t('Global.notes') }}
                                     <span class="hint-red">*</span>
                                 </label>
-                                <textarea class="main_input main_area" :placeholder="$t('Global.notes')"></textarea>
+                                <textarea class="main_input main_area" name="notes" :placeholder="$t('Global.notes')"></textarea>
                             </div>
 
                             <div class="layout-form sm-radius mb-5">
@@ -143,80 +146,72 @@
                                     <div class="radios custom-pd" v-if="rentalOptionCheck">
                                         <div class="d-flex gap-3">
                                             <label class="custom-radio">
-                                                <input type="radio" name="insurance" v-model="insurance" value="true" class="d-none new-mark" checked>
+                                                <input type="radio" name="has_insurance" v-model="has_insurance" value="1" class="d-none new-mark" checked>
                                                 <span class="mark new-mark"></span>
                                                 <p class="hint">{{$t('Global.yes')}}</p>
                                             </label>
                                             <label class="custom-radio">
-                                                <input type="radio" name="insurance" v-model="insurance" value="false" class="d-none new-mark">
+                                                <input type="radio" name="has_insurance" v-model="has_insurance" value="0" class="d-none new-mark">
                                                 <span class="mark new-mark"></span>
                                                 <p class="hint">{{$t('Global.no')}}</p>
                                             </label>
                                         </div>
                                     </div>
 
-                                    <div class="layout-info first" v-if="insurance === 'true'">
+                                    <div class="layout-info">
                                         
                                         <div class="info">
-                                            <span class="name">{{ $t('Global.the_monthly_rent') }}</span>
-                                            <span class="value">150.00 رس</span>
+                                            <span class="name" v-if="rentalOptionCheck">{{ $t('Global.the_monthly_rent') }}</span>
+                                            <span class="name" v-if="!rentalOptionCheck">{{ $t('Global.daily_rent') }}</span>
+                                            <span class="value">{{ insuranceData.rental_price }} {{ $t("Global.Rs") }}</span>
                                         </div>
+
                                         <div class="info">
-                                            <span class="name">{{ $t("Global.number_rental_months") }}</span>
-                                            <span class="value">2 شهر</span>
+                                            <span class="name" v-if="rentalOptionCheck">{{ $t("Global.number_rental_months") }}</span>
+                                            <span class="name" v-if="!rentalOptionCheck">{{ $t("Global.number_rental_days") }}</span>
+                                            <div class="value d-flex gap-1">
+                                                {{ insuranceData.rental_period }}
+                                                <p v-if="rentalOptionCheck">{{ $t("Global.month") }}</p>
+                                                <p  v-else>{{ $t("order.day") }}</p>
+                                            </div>
                                         </div>
+
                                         <div class="info">
                                             <span class="name">{{ $t("Global.total_rental_price") }}</span>
-                                            <span class="value">300 رس</span>
+                                            <span class="value">{{ insuranceData.total_rental_price }} {{ $t("Global.Rs") }}</span>
                                         </div>
-                                        <div class="info">
+
+                                        <div class="info" v-if="has_insurance !== '0' && rentalOptionCheck">
                                             <span class="name">{{ $t("Global.total_insurance_price") }}</span>
-                                            <span class="value">160.00 رس</span>
+                                            <span class="value">{{ insuranceData.insurance_price }} {{ $t("Global.Rs") }}</span>
                                         </div>
-                                        <div class="info">
-                                            <span class="name">سيارة هوندا فاخرة</span>
-                                            <span class="value">سيارة هوندا فاخرة</span>
+
+                                        <div class="info" v-if="!rentalOptionCheck">
+                                            <span class="name">{{ $t("Global.driver_fees") }}</span>
+                                            <span class="value">{{ insuranceData.driver_price }} {{ $t("Global.Rs") }}</span>
                                         </div>
+
+                                        <div class="info" v-if="rentalOptionCheck">
+                                            <span class="name">{{ $t("Global.tamm_platform") }}</span>
+                                            <span class="value">{{ insuranceData.tam_price }} {{ $t("Global.Rs") }}</span>
+                                        </div>
+
                                         <div class="info">
-                                            <span class="name">سيارة هوندا فاخرة</span>
-                                            <span class="value">سيارة هوندا فاخرة</span>
+                                            <span class="name">{{ $t("Global.value_added_tax") }}</span>
+                                            <span class="value">{{ insuranceData.vat_ratio }} {{ $t("Global.Rs") }}</span>
+                                        </div>
+                                        
+                                        <div class="info">
+                                            <span class="name">{{ $t("Global.total_price") }}</span>
+                                            <span class="value main-cl">{{ insuranceData.final_total }} {{ $t("Global.Rs") }}</span>
                                         </div>
 
                                     </div>
-
-                                    <div class="layout-info second" v-else>
-                                        
-                                        <div class="info">
-                                            <span class="name">{{ $t('Global.the_monthly_rent') }}</span>
-                                            <span class="value">150.00 رس</span>
-                                        </div>
-                                        <div class="info">
-                                            <span class="name">{{ $t("Global.number_rental_months") }}</span>
-                                            <span class="value">2 شهر</span>
-                                        </div>
-                                        <div class="info">
-                                            <span class="name">{{ $t("Global.total_rental_price") }}</span>
-                                            <span class="value">300 رس</span>
-                                        </div>
-                                        <div class="info">
-                                            <span class="name">{{ $t("Global.total_insurance_price") }}</span>
-                                            <span class="value">160.00 رس</span>
-                                        </div>
-                                        <div class="info">
-                                            <span class="name">سيارة هوندا فاخرة</span>
-                                            <span class="value">سيارة هوندا فاخرة</span>
-                                        </div>
-                                        <div class="info">
-                                            <span class="name">سيارة هوندا فاخرة</span>
-                                            <span class="value">سيارة هوندا فاخرة</span>
-                                        </div>
-                                        
-                                    </div>
-
                                 </div>
                             </div>
-
-                            <button type="submit" class="custom-btn w-100"> {{ $t('Global.send_request') }} </button>
+                            <button type="submit" class="custom-btn w-100">
+                                 {{ $t('Global.send_request') }} 
+                            </button>
                         </div>
                     </div>
 
@@ -226,9 +221,9 @@
 
         <!-- map dialogs -->
 
-        <!-- location 3 -->
+        <!-- if with with_driver  -->
         <ClientOnly v-if="!rentalOptionCheck">
-            <Dialog v-model:visible="place_of_deliveryDialog_3" modal class="custum_dialog_width" :draggable="false">
+            <Dialog v-model:visible="place_of_deliveryDialog_2" modal class="custum_dialog_width" :draggable="false">
                 <div class="text-center">
                     <p class="main-title mb-4">{{ $t('Global.place_of_delivery') }}</p>
                         <Googlemap
@@ -244,7 +239,7 @@
         </ClientOnly>
 
         
-        <!-- place_of_deliveryDialog map -->
+        <!-- place_of_deliveryDialog map if (without_driver) -->
         <ClientOnly v-if="rentalOptionCheck">
             <Dialog v-model:visible="place_of_deliveryDialog" modal class="custum_dialog_width" :draggable="false">
                 <div class="text-center">
@@ -252,18 +247,16 @@
                         <Googlemap
                             height="300px"
                             apiKey="AIzaSyAboccHIj2gkfRleovrCxpYdePLR6ao1EY"
-                            @change-address="handellAddress($event, 'place_of_delivery')"
                             :autocomplete="false"
-                            drawingMode="null"
                             :language="language"
                             class="autocomplete-dropdown"
-                            :location="first_location"
+                            :location="defaultLocation"
                         />
                 </div>
             </Dialog>
         </ClientOnly>
 
-        <!-- Return_locationDialog map -->
+        <!-- Return_locationDialog map if (without_driver) -->
         <ClientOnly v-if="rentalOptionCheck">
             <!-- Return_locationDialog -->
             <Dialog v-model:visible="Return_locationDialog" modal class="custum_dialog_width" :draggable="false">
@@ -272,12 +265,10 @@
                     <Googlemap
                         height="300px"
                         apiKey="AIzaSyAboccHIj2gkfRleovrCxpYdePLR6ao1EY"
-                        @change-address="handellAddress($event, 'Return_locationDialog')"
                         :autocomplete="false"
-                        drawingMode="null"
                         :language="language"
                         class="autocomplete-dropdown"
-                        :location="second_location"
+                        :location="defaultLocation"
                     />
                 </div>
             </Dialog>
@@ -301,180 +292,370 @@
         </Dialog>
 
         <!-- sent successfully dialog -->
-        <DialogsOrdersSentSuccessfully ref="sentSuccessfully" :orderId="orderId" />
+        <DialogsOrdersSentSuccessfully ref="sentSuccessfully" @sentSuccessfully="sentSuccessfullyData" :loading="loading" :orderId="orderId" />
 
         <!-- paying dialog -->
-        <DialogsOrdersRentalPaying ref="paying" :orderId="orderId" />
+        <DialogsOrdersRentalPaying ref="paying" :orderId="orderId" :loading="loading" @PaySelected="PaySelected" @paymentDone="paymentsubmitData" />
     </div>
 </template>
 
 <script setup>
-    import Googlemap from 'vue-google-maps-ui';
+
+import Googlemap from 'vue-google-maps-ui';
     definePageMeta({
     name: "Global.rental_request",
 });
-</script>
 
-<script>
+const createOrderForm = ref(null);
+const receive_time = ref(null);
 
-export default {
+const reservedDates = ref('');
 
-    data() {
-        return {
-            location_3: '',
-            place_of_deliveryDialog_3: false,
-            third_location: {
-                lat: '',
-                lng: '',
-            },
-            orderId: null,
-            today: new Date(),
-            rentalOptionCheck: false,
-            place_of_deliveryDialog: false,
-            Return_locationDialog: false,
-            location: '',
-            location_2: '',
-            first_location: {
-                lat: '',
-                lng: '',
-            },
 
-            second_location: {
-                lat: '',
-                lng: '',
-            },
+const checkedSelected = ref('');
 
-            language: 'ar',
-            uploadedImage: [],
-            insurance: 'true',
-            time: null,
-            received_date: null,
-            return_date: null,
-            time_receipt_dialog: false,
-            selectedDayId: null,
-            selectedDayName: '',
-            time_receipt: [
-                {
-                    id: 1,
-                    name: "10:00 pm",
-                },
-                {
-                    id: 2,
-                    name: "9:00 pm",
-                },
-                {
-                    id: 3,
-                    name: "5:00 pm",
-                },
-                {
-                    id: 4,
-                    name: "2:00 pm",
-                },
-                {
-                    id: 5,
-                    name: "5:00 pm",
-                },
-            ],
-        };
+// response
+const { response } = responseApi();
+// axios
+const axios = useApi();
+const loading = ref(true);
+
+// toast
+const { successToast, errorToast } = toastMsg();
+
+
+// pinia store
+const store = useAuthStore();
+const { token } = storeToRefs(store);
+
+// config
+const config = {
+    headers: { Authorization: `Bearer ${token.value}` }
+};
+
+// valid variable 
+
+const errors = ref([]);
+
+// my variable
+const formattedDate = ref(null);
+const formattedDate_2 = ref(null);
+const formattedtime = ref(null);
+const defaultLocation = ref({
+    lat: '',
+    lng: '',
+});
+const paying = ref(false);
+const sentSuccessfully = ref(false);
+const rentalOptionCheck = ref(false);
+const place_of_deliveryDialog_2 = ref(false);
+const place_of_deliveryDialog = ref(false);
+const Return_locationDialog = ref(false);
+const time_receipt_dialog = ref(false);
+const selectedDayId = ref(null);
+const selectedDayName = ref(null);
+const time_receipt = ref([
+    {
+        id: 1,
+        name: "12:00 pm",
     },
+    {
+        id: 2,
+        name: "1:00 pm",
+    },
+    {
+        id: 3,
+        name: "2:00 pm",
+    },
+    {
+        id: 4,
+        name: "3:00 pm",
+    },
+    {
+        id: 5,
+        name: "4:00 pm",
+    },
+    {
+        id: 6,
+        name: "5:00 pm",
+    },
+    {
+        id: 7,
+        name: "6:00 pm",
+    },
+    {
+        id: 8,
+        name: "7:00 pm",
+    },
+    {
+        id: 9,
+        name: "8:00 pm",
+    },
+    {
+        id: 10,
+        name: "9:00 pm",
+    },
+    {
+        id: 11,
+        name: "10:00 pm",
+    },
+    {
+        id: 12,
+        name: "11:00 pm",
+    },
+    {
+        id: 13,
+        name: "12:00 am",
+    },
+]);
+const language = ref("ar");
+const orderId = ref(null);
+const insuranceData = ref([]);
+const location = ref(null);
+const location_2 = ref(null);
+const location_3 = ref(null);
+const lat = ref('');
+const lng = ref('');
+const return_date = ref(null);
+const uploadedImage = ref([]);
+const has_insurance = ref('true');
+const received_date = ref(null);
+const today = new Date();
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({ useScope: 'global' });
 
-    methods: {
 
-        setSelectedDay() {
-            // Find the selected day object based on the selectedDayId
-            const selectedDay = this.time_receipt.find(day => day.id === this.selectedDayId);
-            if (selectedDay) {
-                // Update selectedDayName with the name of the selected day
-                this.selectedDayName = selectedDay.name;
-            } else {
-                // Handle if no day is selected
-                this.selectedDayName = '';
-            }
-            // Close the dialog if needed
-            this.time_receipt_dialog = false;
-        },
-
-        updateUploadedImages_1(images) {
-            this.uploadedImage = images;
-        },
-
-        updateUploadedImages_2(images) {
-            this.uploadedImage = images;
-        },
-
-        handellAddress(event, locationType) {
-                if(locationType === 'place_of_delivery') {
-                    this.first_location.lat = 31.0281208;
-                    this.first_location.lng = 31.3814776;
-                    if (event && event.address) {
-                        this.location = event.address;
-                        console.log(this.location, "location");
-                        console.log(this.first_location, "first location");
-                        console.log(this.second_location, "second location");
-                    }
-                } else if(locationType === 'Return_locationDialog') {
-                    this.second_location.lat = 31.0627371;
-                    this.second_location.lng = 31.4024261;
-                    if (event && event.address) {
-                        this.location_2 = event.address;
-                        console.log(this.location_2, "location_2");
-                    }
-                } else if (locationType === 'place_of_delivery_3') {
-                    this.location_3 = event.address;
-                    this.third_location.lat = event.info.geometry.location.lat();
-                    this.third_location.lng = event.info.geometry.location.lng();
-                    console.log(this.third_location, "third location 33333333333");
-                }
-            },
-
-        submitData() {
-            this.orderId = Math.floor(Math.random() * 10);
-            console.log(this.orderId, "orderId here");
-
-            if(JSON.parse(localStorage.getItem('formData')).rentalOption === "with_driver") {
-                this.$refs.sentSuccessfully.sent_Successfully = true;
-                
-            } else {
-                this.$refs.paying.payingDialog = true;
-            }
+const PaySelected = (id) => {
+    checkedSelected.value = id;
+};
 
 
-            // this.$router.push('/orders/orderDetails')
+// create order if with driver
+const paymentsubmitData = async () => {
+
+    loading.value = true;
+    formattedDate.value = formatDate(received_date.value);
+    formattedDate_2.value = formatDate(return_date.value);
+    formattedtime.value = formatDate(receive_time.value);
+
+    const fd = new FormData(createOrderForm.value);
+    const rentalData = JSON.parse(localStorage.getItem('formData'));
+    fd.append('type', rentalData.rentalOption);
+    fd.append('car_id', rentalData.selectedCarId);
+    fd.append('rental_period', rentalData.rentalPeriod);
+    fd.append('rental_type_id', rentalData.rentalType.id);
+    fd.append('pay_type', checkedSelected.value);
+    fd.append('receive_date', formattedDate.value.date);
+    // fd.append('receive_time', formattedtime.value.time);
+    fd.append('receive_time', selectedDayName.value);
+    fd.append('receive_date_2', formattedDate_2.value.date);    
+    await axios.post('create-order', fd, config).then(res => {
+        if (response(res) == "success") {
+            paying.value.payingDialog = false;
+            orderId.value = res.data.data;
+            navigateTo({path: '/orders/orderDetails/' + orderId.value});
+        } else {
+            errorToast(res.data.msg);
         }
-    },
+        loading.value = false;
+    }).catch(err => console.log(err));
+};
+
+
+// create order if without driver
+const sentSuccessfullyData = async () => {
+
+loading.value = true;
+formattedDate.value = formatDate(received_date.value);
+formattedDate_2.value = formatDate(return_date.value);
+formattedtime.value = formatDate(receive_time.value);
+
+const fd = new FormData(createOrderForm.value);
+const rentalData = JSON.parse(localStorage.getItem('formData'));
+fd.append('type', rentalData.rentalOption);
+fd.append('car_id', rentalData.selectedCarId);
+fd.append('rental_period', rentalData.rentalPeriod);
+fd.append('rental_type_id', rentalData.rentalType.id);
+fd.append('receive_date', formattedDate.value.date);
+// fd.append('receive_time', formattedtime.value.time);
+fd.append('receive_time', selectedDayName.value);
+fd.append('receive_date_2', formattedDate_2.value.date);
+fd.append('map_desc', location_3.value);
+fd.append('lat', lat.value);
+fd.append('lng', lng.value);
+
+await axios.post('create-order', fd, config).then(res => {
+    if (response(res) == "success") {
+        orderId.value = res.data.data;
+        localStorage.setItem('orderId', orderId.value);
+        navigateTo({path: '/orders/orderDetails/' + orderId.value});
+
+    } else {
+        errorToast(res.data.msg);
+
+    }
+    loading.value = false;
     
-    
-    mounted() {
-        this.language = this.$i18n.locale;
+}).catch(err => console.log(err));
+};
 
-        // Retrieve data from localStorage
-        const formDataString = localStorage.getItem('formData');
 
-        // Check if formDataString exists in localStorage
-        if (formDataString) {
-            // Parse the JSON string back into an object
-            const formData = JSON.parse(formDataString);
+const time_receipt_dialogFun = () => {
+    time_receipt_dialog.value = true
+};
 
-            // Check if rentalOption is equal to "with_driver"
-            if (formData.rentalOption === "without_driver") {
-                this.rentalOptionCheck = true;
-            }
-        };
+// methods
 
-            // start to handling map locations
+// const formatDate = (date) => {
+//       if (!date || !(date instanceof Date)) {
+//         // Handle the case where date is null, undefined, or not a Date instance
+//         return '';
+//       }
 
-            // set location of place of delivery and return location
-            const deliveryAddress = { address: '' };
-            const returnAddress = { address: '' };
+//       const year = date.getFullYear();
+//       const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+//       const day = date.getDate().toString().padStart(2, '0');
 
-            // Call handellAddress for place of delivery
-            this.handellAddress(deliveryAddress, 'place_of_delivery');
+//       return `${year}-${month}-${day}`;
+//     };
 
-            // Call handellAddress for return location
-            this.handellAddress(returnAddress, 'Return_locationDialog');
-    },
-    
+// method convert to Date lonly, and time only
+
+const formatDate = (dateTime) => {
+  if (!dateTime || !(dateTime instanceof Date)) {
+    // Handle the case where dateTime is null, undefined, or not a Date instance
+    return { date: '', time: '' };
+  }
+
+  const year = dateTime.getFullYear();
+  const month = (dateTime.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+  const day = dateTime.getDate().toString().padStart(2, '0');
+  const hours = dateTime.getHours().toString().padStart(2, '0');
+  const minutes = dateTime.getMinutes().toString().padStart(2, '0');
+  const date = `${year}-${month}-${day}`;
+  const time = `${hours}:${minutes}`;
+
+  return { date, time };
+};
+
+const updateUploadedImages_1 = (images) => {
+    uploadedImage.value = images;
+};
+
+const updateUploadedImages_2 = (images) => {
+    uploadedImage.value = images;
+};
+
+const handellAddress = (event) => {
+        location_3.value = event.address;
+        lat.value = event.info.geometry.location.lat()
+        lng.value = event.info.geometry.location.lng()
+};
+
+
+const setSelectedDay = () => {
+    // Find the selected day object based on the selectedDayId
+    const selectedDay = time_receipt.value.find(day => day.id === selectedDayId.value);
+    if (selectedDay) {
+        // Update selectedDayName with the name of the selected day
+        const hourPart = selectedDay.name.substring(0, selectedDay.name.indexOf(':')); // Extract hour part
+        selectedDayName.value = `${hourPart}:00`;
+    } else {
+        // Handle if no day is selected
+        selectedDayName.value = '';
+    }
+    // Close the dialog if needed
+    time_receipt_dialog.value = false;
+};
+
+// route to order details
+
+const submitData = async () => {
+
+    if(JSON.parse(localStorage.getItem('formData')).rentalOption == 0) {
+        sentSuccessfully.value.sent_Successfully = true;
+        
+    } else {
+        paying.value.payingDialog = true;
+    }
 }
+
+// get location-data if it (without_driver)
+
+const get_location = async () => {
+    loading.value = true;
+  await axios.get('location-data').then(res => {
+      if (response(res) == "success") {
+        defaultLocation.value.lat = Number(res.data.data.lat);
+        defaultLocation.value.lng = Number(res.data.data.lng);
+        location.value = res.data.data.map_desc;
+        location_2.value = res.data.data.map_desc;
+    }
+    loading.value = false;
+  }).catch(err => console.log(err));
+};
+
+// get Insurance data
+const get_insurance = async () => {
+    loading.value = true;
+    const rentalData = JSON.parse(localStorage.getItem('formData'));
+    const fd = new FormData();
+    fd.append('rental_type_id', rentalData.rentalType.id);
+    fd.append('car_id', rentalData.selectedCarId);
+    fd.append('type', rentalData.rentalOption);
+    fd.append('rental_period', rentalData.rentalPeriod);
+    await axios.post('order-enquiry', fd, config).then(res => {
+        if (response(res) == "success") {
+            insuranceData.value = res.data.data;
+        }
+        loading.value = false;
+    }).catch(err => console.log(err));
+};
+
+// get unavailable-dates 
+
+const get_unavailable_dates = async () => {
+    const rentalData = JSON.parse(localStorage.getItem('formData'));
+    loading.value = true;
+  await axios.get(`unavailable-dates?car_id=${rentalData.selectedCarId}`, config).then(res => {
+      if (response(res) == "success") {
+        reservedDates.value = res.data.data.map(
+          (dateString) => new Date(dateString)
+        );
+    }
+    loading.value = false;
+  }).catch(err => console.log(err));
+};
+
+onMounted(() => {
+
+    get_insurance();
+    get_unavailable_dates();
+
+    if(localStorage.getItem('locale') === "ar" || localStorage.getItem('locale') === null) {
+        language.value = "ar";
+    } else {
+        language.value = "en";
+    }
+
+    // Retrieve data from localStorage
+    const formDataString = localStorage.getItem('formData');
+
+    // Check if formDataString exists in localStorage
+    if (formDataString) {
+        // Parse the JSON string back into an object
+        const formData = JSON.parse(formDataString);
+
+        // Check if rentalOption is equal to "with_driver"
+        if (formData.rentalOption == 1) {
+            rentalOptionCheck.value = true;
+            // get location Data if it (without_driver)
+            get_location();
+            console.log("without_driver", rentalOptionCheck.value);
+        };
+    };
+});
+
 </script>
 
 <style lang="scss">

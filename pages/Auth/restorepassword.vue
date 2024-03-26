@@ -2,11 +2,11 @@
     <div class="container">
         <div class="layout-form custom-width">
             <h1 class="main-title bold lg mb-5">{{ $t("Auth.restore_password") }}</h1>
-            <form @submit.prevent="submitData">
+            <form @submit.prevent="forgetPassword" ref="forgetForm">
                 <div class="row">
                     <div class="col-12 col-md-8 mr-auto">
                         <div class="text-center mb-5">
-                            <img src="@/assets/images/restore-image.svg" alt="restore-image" class="restore-image mb-4">
+                            <img src="@/assets/images/restore-image.svg" loading="lazy" alt="restore-image" class="restore-image mb-4">
                             <p class="main-title">{{ $t("Auth.Please_enter_mobile_number") }}</p>
                         </div>
 
@@ -16,7 +16,7 @@
                                 <span class="hint-red">*</span>
                             </label>
                             <div class="with_cun_select">
-                                <input type="number" class="main_input" name="name" v-model="name" :placeholder="$t('Auth.mobile_number')">
+                                <input type="number" class="main_input" name="phone" v-model="phone" :placeholder="$t('Auth.mobile_number')">
                                 <div class="card d-flex justify-content-center dropdown_card">
                                 <Dropdown
                                 v-model="selectedCountry"
@@ -26,9 +26,10 @@
                                 <template #value="slotProps">
                                     <div v-if="slotProps.value" class="flex-group-me">
                                     <img
+                                        loading="lazy"
                                         :alt="slotProps.value.label"
                                         :src="slotProps.value.image"
-                                        :class="`mr-2 flag flag-${slotProps.value.key.toLowerCase()}`"
+                                        :class="`mr-2 flag flag-${slotProps.value.key}`"
                                         style="width: 24px"
                                     />
                                     <div>{{ slotProps.value.key }}</div>
@@ -40,9 +41,10 @@
                                 <template #option="slotProps">
                                     <div class="flex-group-me">
                                     <img
+                                        loading="lazy"
                                         :alt="slotProps.option.label"
                                         :src="slotProps.option.image"
-                                        :class="`mr-2 flag flag-${slotProps.option.key.toLowerCase()}`"
+                                        :class="`mr-2 flag flag-${slotProps.option.key}`"
                                         style="width: 24px"
                                     />
                                     <div>{{ slotProps.option.key }}</div>
@@ -52,7 +54,10 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="custom-btn w-100 mr-auto"> {{ $t('Auth.confirmation') }} </button>
+                        <button type="submit" class="custom-btn w-100 mr-auto"> 
+                            {{ $t('Auth.confirmation') }} 
+                            <span class="spinner-border spinner-border-sm" v-if="loading" role="status" aria-hidden="true"></span>
+                        </button>
                     </div>
                 </div>
             </form>
@@ -60,41 +65,115 @@
     </div>
 </template>
 
-<script>
-    definePageMeta({
+<script setup>
+
+definePageMeta({
     name: "Auth.restore_password",
 });
-import dropdown_img from '@/assets/images/Flag.webp';
-import dropdown_img_1 from '@/assets/images/messi.gif';
 
-export default {
-    data() {
-        return {
-            name: '',
-            selectedCountry: {
-                    key: "+966",
-                    code: "SA",
-                    image: dropdown_img,
-            },
-            countries: [
-                {
-                key: "+966",
-                code: "SA",
-                image: dropdown_img_1,
-                },
-                {
-                key: "+20",
-                code: "Eg",
-                image: dropdown_img_1,
-                },
-            ],
+/******************* Plugins *******************/
+import { useI18n } from 'vue-i18n';
+const { locale, t } = useI18n({ useScope: 'global' });
+
+// success response
+const { response } = responseApi();
+
+// Toast
+const { successToast, errorToast } = toastMsg();
+
+// Axios
+const axios = useApi();
+
+// pinia store
+import { storeToRefs } from 'pinia';
+import { useAuthStore } from '~/stores/auth';
+
+/******************* Data *******************/
+
+// Store
+const store = useAuthStore();
+const { user } = storeToRefs(store);
+
+// success response
+
+const forgetForm = ref(null);
+const phone = ref('');
+const loading = ref(false);
+const router = useRouter();
+const errors = ref([]);
+
+// countries
+const selectedCountry = ref({});
+const countries = ref([]);
+
+/******************* Provide && Inject *******************/
+
+/******************* Props *******************/
+
+/******************* Methods *******************/
+
+// Get All countries
+const getCountries = async () => {
+    await axios.get('countries').then(res => {
+        if (response(res) == "success") {
+            countries.value = res.data.data;
+            for (let i = 0; i < countries.value.length; i++) {
+                if (countries.value[i].id == 1) {
+                    selectedCountry.value = countries.value[i];
+                }
+            }
         }
-    },
+    }).catch(err => console.log(err));
+}
 
-    methods: {
-        submitData() {
-            this.$router.push('/Auth/restorepassword-check-code')
+// validate Func
+function validate() {
+    let allInputs = document.querySelectorAll('.validInputs');
+    for (let i = 0; i < allInputs.length; i++) {
+        if (allInputs[i].value === '') {
+            errors.value.push(t(`validation.${allInputs[i].name}`));
         }
     }
 }
+
+// forgetPassword Function
+const forgetPassword = async () => {
+    loading.value = true;
+    const fd = new FormData(forgetForm.value);
+    fd.append('country_code', selectedCountry.value.key);
+
+    validate();
+
+    if (errors.value.length) {
+        errorToast(errors.value[0]);
+        loading.value = false;
+        errors.value = [];
+    } else {
+
+        await axios.post('forget-password-send-code', fd).then(res => {
+            if (response(res) == "success") {
+                user.value.phone = phone.value;
+                user.value.country_code = selectedCountry.value.key;
+
+                successToast(res.data.msg);
+                navigateTo('/Auth/restorepassword-check-code');
+
+            } else {
+                errorToast(res.data.msg);
+            }
+            loading.value = false;
+        }).catch(err => console.log(err));
+
+    }
+}
+
+/******************* Computed *******************/
+
+/******************* Watch *******************/
+
+/******************* Mounted *******************/
+onMounted(async () =>{
+    await getCountries();
+})
 </script>
+

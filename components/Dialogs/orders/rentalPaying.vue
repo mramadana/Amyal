@@ -3,38 +3,49 @@
         <Dialog v-model:visible="payingDialog" modal class="custum_dialog_width" :draggable="false">
                 
                 <h1 class="text-center main-title bold mb-4">{{ $t('Global.complete_payment') }}</h1>
-                
-                <div class="payment-items input-g">
-
-                <div class="payment-item mb-3" v-for="(pay, i) in paymentItems" :key="pay.id">
-
-                    <input type="radio" name="pay_type" :value="pay.id" v-model="payment"
-                        :id="`payment${i}`" class="payment-input">
-                    <label :for="`payment${i}`" class="payment-label">
-
-                        <div class="right">
-                            <img :src="pay.icon" alt="" class="payment-img">
-                            <div class="content">
-                                <div class="name">{{ pay.name }}</div>
-                                <div class="text">{{ pay.desc }}</div>
+                <form @submit.prevent="submitData">
+                  <div class="payment-items input-g">
+  
+                    <div class="payment-item mb-3" v-for="(pay, i) in paymentItems" :key="pay.id">
+  
+                        <input type="radio" name="pay_type" :value="pay.id" v-model="payment"
+                            :id="`payment${i}`" class="payment-input" @change="handlepayId(pay.id)">
+                        <label :for="`payment${i}`" class="payment-label">
+  
+                            <div class="right">
+                                <img :src="pay.icon" alt="" class="payment-img">
+                                <div class="content">
+                                    <div class="name">{{ pay.name }}</div>
+                                    <div class="text">{{ pay.desc }}</div>
+                                </div>
                             </div>
-                        </div>
+  
+                            <div class="circle"></div>
+  
+                        </label>
+  
+                    </div>
+  
+                  </div>
+  
+                  <div class="text-center">
+                    
+                      <!-- <NuxtLink class="custom-btn sm d-inline-flex" :to= "'/orders/orderDetails/' + orderId">{{ $t('Global.pay_now') }}</NuxtLink> -->
+  
+                      <!-- <NuxtLink class="custom-btn sm d-inline-flex" :disabled="!allRadiosChecked" :to="allRadiosChecked ? '/orders/orderDetails/' + orderId : ''">{{ $t('Global.pay_now') }}</NuxtLink> -->
 
-                        <div class="circle"></div>
+                      <button type="submit" class="custom-btn sm d-inline-flex with_disabled" :disabled="!allRadiosChecked">
+                        {{ $t('Global.pay_now') }}
+                        <span class="spinner-border spinner-border-sm" v-if="loading" role="status" aria-hidden="true"></span>
+                      </button>
+                  </div>
 
-                    </label>
-
-                </div>
-
-                </div>
-
-                <div class="text-center">
-                    <NuxtLink class="custom-btn sm d-inline-flex" :to= "'/orders/orderDetails/' + orderId">{{ $t('Global.pay_now') }}</NuxtLink>
-                </div>
-
+                </form>
         </Dialog>
     </div>
 </template>
+
+
 
 
 <script>
@@ -44,28 +55,52 @@ import image_2 from '@/assets/images/wallet.png';
 
 
 export default {
-  props: ['orderId'],
+  props: ['orderId', 'loading'],
   data() {
     return {
       payingDialog: false,
+      payment: null,
       paymentItems: [
         {
-          id: 1,
+          id: 4,
           name: this.$t('Global.payment_electronically'),
           desc: this.$t('Global.pay_online'),
           icon: image_1
         },
         {
-          id: 3,
+          id: 2,
           name: this.$t('Home.portfolio'),
           desc: this.$t('Global.pay_wallet'),
           icon: image_2
         }
       ]
     };
-  }
+  },
+  
+  computed: {
+    allRadiosChecked() {
+      // Check if all radio buttons are checked
+      return this.paymentItems.some(pay => pay.id === this.payment);
+    }
+  },
+
+  methods: {
+    handlepayId(payId) {
+      this.$emit('PaySelected', payId);
+    },
+
+    submitData() {
+        if (this.payment) {
+            this.handlepayId(this.payment);
+            this.$emit('paymentDone', true);
+        }
+    }
+  },
+
+
 }
 </script>
+
 <style lang="scss">
 
 .payment-items {
@@ -165,5 +200,13 @@ export default {
   .payment-item .payment-label .right .name {
     font-size: 15px;
   }
+}
+
+.with_disabled:disabled {
+  background-color: #cccccc;
+  opacity: 0.7;
+  box-shadow: none;
+  color: #000;
+  cursor: no-drop;
 }
 </style>

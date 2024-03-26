@@ -3,13 +3,15 @@
         
         <div class="container">
             <div class="layout-form custom-width lg">
-                <h1 class="main-title bold">{{ $t("Global.about_site") }}</h1>
+                <h1 class="main-title bold mb-4">{{ $t("Global.about_site") }}</h1>
 
-                <div class="main-title normal mt-5">
-                    هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد النصوص الأخرى إضاف إلى زيادة عدد الحروف التى يولدها التطبيق
-                    هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد النصوص الأخرى إضاف إلى زيادة عدد الحروف التى يولدها التطبيق
-                    هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد النصوص الأخرى إضاف إلى زيادة عدد الحروف التى يولدها التطبيق
-                    هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد النصوص الأخرى إضاف إلى زيادة عدد الحروف التى يولدها التطبيق
+                <div v-if="!loading" class="main-title normal mt-3 about_disc" v-html="aboutDisc">
+                </div>
+
+                <div v-if="loading">
+                    <div v-for="i in 8" :key="i">
+                        <Skeleton height=".5rem" width="80%" class="rounded-0 mb-2 mx-auto"></Skeleton>
+                    </div>
                 </div>
             </div>
         </div>
@@ -18,15 +20,38 @@
     </div>
 </template>
 
-<script>
+<script setup>
+
 definePageMeta({
     name: "Global.about_site",
 });
-export default {
-    data() {
-        return {
-            
-        };
-    },
+
+const loading = ref(true);
+
+const { response } = responseApi();
+
+const axios = useApi();
+
+
+const aboutDisc = ref('');
+
+// methods 
+
+// getAbout
+const getAbout = async () => {
+    loading.value = true;
+    await axios.get(`about`).then(res => {
+    if (response(res) == "success") {
+        aboutDisc.value = res.data.data;
+    }
+    loading.value = false;
+    }).catch(err => {
+        console.error(err);
+    });
 };
+
+onMounted(() => {
+    getAbout();
+})
 </script>
+

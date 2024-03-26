@@ -25,6 +25,7 @@ export default defineNuxtConfig({
   modules: [
     'nuxt-primevue',
     "@pinia/nuxt",
+    '@pinia-plugin-persistedstate/nuxt',
   ],
   
     alias: {

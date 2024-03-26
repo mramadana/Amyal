@@ -78,22 +78,18 @@
                         </ul>
 
                         <div class="left">
-                            <button
-                                class="dropdown dropdown-profile"
-                                v-if="showLogo === 'false'"
-                            >
+                            <button class="dropdown dropdown-profile" v-if="isLoggedIn">
                                 <div
                                     class="profile-hint"
                                     id="dropdownMenuButton1"
                                     data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                >
+                                    aria-expanded="false">
                                     <img
-                                        src="@/assets/images/profile_img.jpg"
+                                        :src="user.image"
                                         alt="user-image"
                                         class="user-image"
                                     />
-                                    <p class="user-name">أحمد محمد</p>
+                                    <p class="user-name">{{ user.name }}</p>
                                 </div>
                                 <ul
                                     class="dropdown-menu"
@@ -121,28 +117,28 @@
                                         to="/myorders"
                                         >{{ $t("Home.myrequests") }}</nuxt-link
                                     >
-                                    <button
+                                    <div
                                         type="button"
                                         @click="logoutDialog = true"
                                         class="dropdown-item"
                                     >
                                         {{ $t("Home.logout") }}
-                                    </button>
+                                    </div>
                                     <!-- <nuxt-link class="dropdown-item" to="/Auth/login">{{ $t("Home.logout") }}</nuxt-link> -->
                                 </ul>
                             </button>
 
-                            <Nuxt-link
+                            
+
+                            <Nuxt-link v-if="isLoggedIn"
                                 to="/notifications"
-                                class="notification"
-                                v-if="showLogo === 'false'"
-                            >
-                                <div class="notif-icon" :data-number="4">
+                                class="notification">
+                                <div class="notif-icon" :data-number="notifCount">
                                     <i class="fas fa-bell"></i>
                                 </div>
                             </Nuxt-link>
 
-                            <nuxt-link class="btn-login" to="/Auth/login">
+                            <nuxt-link class="btn-login" to="/Auth/login" v-if="!isLoggedIn">
                                 <i class="fas fa-sign-in-alt sign-icon"></i>
                                 <span class="login-text">{{
                                     $t("Auth.login")
@@ -205,45 +201,102 @@
 
 
 <script setup>
-    import nuxtStorage from "nuxt-storage";
-    const route = useRoute();
-    const showLogo = ref("");
-    onMounted(() => {
-    if (route.path.includes("/Auth") == false) {
-    showLogo.value = "false";
-    }
-    });
 
-    watch(
-    () => route.path,
-    () => {
-    showLogo.value = nuxtStorage.localStorage.getData("token");
-    console.log(showLogo.value);
+    import { useAuthStore } from '~/stores/auth';
+    import { useGlobalStore } from '~/stores/global';
+    
+    // Toast
+    const { successToast, errorToast } = toastMsg();
+
+    // Axios
+    const axios = useApi();
+    
+    // store
+    const store = useAuthStore();
+
+    const globalStore = useGlobalStore();
+
+    const { user, isLoggedIn, token } = storeToRefs(store);
+
+
+    const { response } = responseApi();
+
+    const { logoutHandler } = store;
+    // notifications
+    const notifCount = ref(0);
+    const logoutDialog = ref(false);
+
+    // config
+    let config = {
+    headers: {
+        Authorization: `Bearer ${token.value}`
     }
-    );
+};
+    const logout = async () => {
+        
+        // Get Returned Data From Store
+
+        logoutDialog.value = false;
+        const res = await logoutHandler();
+        res.status == "success" ? successToast(res.msg) : errorToast(res.msg);
+        localStorage.clear();
+    }
+
+    // notifCount
+
+    // get notifications Count
+    const getNotificationsCount = async () => {
+        await axios.get('count-notifications', config).then(res => {
+            if(response(res) == "success") {
+                notifCount.value = res.data.data.count;
+            }
+        }).catch(err => {
+            console.error(err);
+        });
+    };
+
+    // watch token To Get The New User Data
+    watch(token, async (newVal) => {
+    if (newVal) {
+        config = {
+            headers: {
+                Authorization: `Bearer ${newVal}`
+            }
+        }
+
+        getNotificationsCount();
+    } else {
+        notifCount.value = 0;
+    }
+});
+
+    onMounted( async () => {
+       await getNotificationsCount();
+    });
+    
 </script>
 
 <script>
+
 export default {
     data() {
         return {
-            logoutDialog: false,
             htmlLang: "",
-            checked: false,
             navBtnActive: false,
             navLinksActive: false,
             navOverlayShow: false,
             isActive: false,
-            // showLogo: true,
         };
     },
 
     methods: {
-        logout() {
-            localStorage.clear();
-            this.logoutDialog = false;
-            this.$router.push("/Auth/login");
-        },
+        // logout() {
+        //     localStorage.clear();
+        //     this.logoutDialog = false;
+        //     this.$router.push("/Auth/login");
+        // },
+
+
         chageDir(dir) {
             let element = document.querySelector(".html_direction");
             element.setAttribute("lang", dir);
@@ -284,30 +337,6 @@ export default {
             this.chageDir(localStorage.getItem("locale"));
         }
     },
-
-    // created() {
-    //     // Check if the current route is within the Auth section
-    //     if (this.$route.path.startsWith("/Auth")) {
-    //         // If yes, hide it
-    //         this.showLogo = false;
-    //     }
-    // },
-
-    // watch: {
-    //     $route(to) {
-    //         // Watch for when the route changes close the side menu
-    //         this.handleOverlayClick();
-
-    //         if (to.path.includes("/Auth")) {
-    //             // If yes, hide the logo
-    //             this.showLogo = false;
-    //         } else {
-    //             // // Otherwise, show the logo
-    //             this.showLogo = true;
-                
-    //         }
-    //     },
-    // },
 
     computed: {
         headerClass() {

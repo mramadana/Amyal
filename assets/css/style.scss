@@ -123,6 +123,16 @@
   background-color: transparent;
   .user-name {
     font-size: 13px;
+    @media (max-width: $screen-xs) {
+       font-size: 12px;
+    }
+    @media (max-width: 380px) {
+      max-width: 64px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      direction: ltr;
+    }
   }
   .dropdown-item {
     padding: 7px 8px !important;
@@ -1016,7 +1026,7 @@ input.p-inputtext.p-component {
 }
 
 .main-title {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 600;
   margin-bottom: 10px;
   color: #000;
@@ -1142,6 +1152,12 @@ input.p-inputtext.p-component {
   font-size: 12px;
   border-radius: 50%;
   cursor: pointer;
+}
+
+.without_label {
+  .edit-label, .remove-btn {
+    display: none !important;
+  }
 }
 
 .custum-input-icon {
@@ -1316,18 +1332,29 @@ input.p-inputtext.p-component {
 .car-hint {
   position: absolute;
   top: 20px;
-  @include dir-right(20px);
+  @include dir-right(15px);
   font-size: 12px;
   color: #282A29;
   background-color: rgba(224, 148, 65, 40%);
   padding: 5px 8px;
   border-radius: 10px;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  direction: ltr;
+  @media (max-width: $screen-md) {
+     @include dir-right(10px);
+     max-width: 80px;
+     font-size: 11px;
+  }
   @media (max-width: $screen-xs) {
      background-color: var(--main);
      color: var(--wh);
      top: 10px;
      @include dir-right(10px);
   }
+
 }
 
 .custum_dialog_width {
@@ -1556,7 +1583,7 @@ input.p-inputtext.p-component {
       gap: 7px;
       flex-wrap: wrap;
       padding: 12px;
-      span {
+      span, .value {
           font-size: 14px;
           color: #575757;
       }
@@ -1566,7 +1593,7 @@ input.p-inputtext.p-component {
   }
 
   .rent-bg {
-      background-color: rgba(224, 148, 65, 40%);
+      background-color: rgba(224, 148, 65, 8%) !important;
   }
 
   .rent-mounth {
@@ -1574,6 +1601,9 @@ input.p-inputtext.p-component {
   }
 }
 
+.main-cl {
+    color: var(--main) !important;
+}
 .custom-pd {
   padding: 12px;
 }
@@ -1638,6 +1668,26 @@ input.p-inputtext.p-component {
     @media (max-width: $screen-xs) {
       display: none;
     }
+  }
+}
+
+.cl-red {
+  color: #F10021 !important;
+}
+
+.id_photo {
+  width: 25px;
+  height: 25px;
+  object-fit: cover;
+  border-radius: 3px;
+}
+
+.car-box .info .car-name {
+  #{$ltr} & {
+    text-align: start;
+  }
+  #{$rtl} & {
+    text-align: end;
   }
 }
 

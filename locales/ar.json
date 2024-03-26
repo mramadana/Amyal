@@ -10,6 +10,31 @@
         "activation_code" : "كود التفعيل"
     },
 
+    "validation": {
+        "image": "الصورة مطلوبة",
+        "name": "من فضلك أدخل الاسم",
+        "phone": "من فضلك أدخل رقم الهاتف",
+        "email": "من فضلك أدخل Email صحيح",
+        "password": "من فضلك أدخل كلمة المرور",
+        "confirmPassword": "كلمة المرور غير متطابقة",
+        "search": "كلمة البحث مطلوبة",
+        "newPassword": "من فضلك أدخل كلمة المرور الجديدة",
+        "conditions": "يجب الموافقة على الشروط والأحكام",
+        "code": "من فضلك أدخل كود التفعيل",
+        "title": "من فضلك أدخل عنوان الرسالة ",
+        "content": "من فضلك أدخل الرسالة ",
+        "requiresAuth": "يرجى تسجيل الدخول أولا ",
+        "copy": "تم نسخ الرابط بنجاح",
+        "retrieval_reason": "سبب الارجاع مطلوب",
+        "returnImg": "صور الارجاع مطلوبة",
+        "products": "قم بتحديد المنتجات المطلوب ارجاعها",
+        "rental_period": "مدة التاجير مطلوبة",
+        "receive_dateValid": "تاريخ الاستلام مطلوب",
+        "complaint": "من فضلك أدخل الشكوى",
+        "rate": "التقييم مطلوب",
+        "message": "الرسالة مطلوبة"
+      },
+
     "Auth": {
         "login": "تسجيل دخول",
         "mobile_and_password" : "ادخل رقم الجوال وكلمة المرور",
@@ -174,7 +199,39 @@
         "notifications" : "الاشعارات",
         "no_notifications" : "لا يوجد اشعارات",
         "delete_all" : "حذف الكل",
-        "Saving_changes_success" : "تم حفظ التعديلات بنجاح"
+        "Saving_changes_success" : "تم حفظ التعديلات بنجاح",
+        "sure_delete_account": "هل انت متاكد من حذف الحساب",
+        "delete_account_info": "في حالة حذف القسم سيتم حذف كافة البيانات الخاصه بالفرع بالإضافة الى حذف المنتجات",
+        "imgs": "لا يوجد صور حاليا",
+        "brand": "الماركة",
+        "no_products": "لا يوجد منتجات حاليا",
+        "rent": "الايجار",
+        "daily_rent": "الايجار اليومي",
+        "monthly_rent": "الايجار شهري",
+        "yearly_rent": "الايجار سنوي",
+        "car_brand": "ماركة السيارة",
+        "car_model": "موديل السيارة",
+        "manufacturing_year": "سنة الصنع",
+        "no_rates": "لا يوجد تقييمات حاليا",
+        "tamm_platform": "رسوم منصة تم",
+        "value_added_tax": "ضريبة القيمة المضافة",
+        "total_price": "السعر الإجمالي",
+        "month": "شهر",
+        "number_rental_days": "عدد ايام التأجير",
+        "driver_fees": "رسوم السائق"
+    },
+
+    "order": {
+        "car_name": "اسم السيارة",
+        "driver": "السائق",
+        "day": "يوم",
+        "order_status": "حالة الطلب",
+        "date_of_order": "تاريخ الطلب",
+        "Riyadh": "الرياض",
+        "your_rating": "تقييمك",
+        "since": "منذ",
+        "order_rejected": "تم رفض هذا الطلب من منصة تم",
+        "enter_amount": "ادخال المبلغ"
     }
 
 }

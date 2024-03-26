@@ -10,7 +10,7 @@
                     <div class="payment-item mb-3" v-for="(pay, i) in paymentItems" :key="pay.id">
     
                         <input type="radio" name="pay_type" :value="pay.id" v-model="payment"
-                            :id="`payment${i}`" class="payment-input">
+                            :id="`payment${i}`" class="payment-input" @change="handlepayId(pay.id)">
                         <label :for="`payment${i}`" class="payment-label">
     
                             <div class="right">
@@ -30,7 +30,10 @@
                     </div>
     
                     <div class="text-center">
-                        <button type="submit" class="custom-btn sm d-inline-flex">{{ $t('Global.pay_now') }}</button>
+                        <button type="submit" class="custom-btn sm d-inline-flex with_disabled" :disabled="!allRadiosChecked">
+                          {{ $t('Global.pay_now') }}
+                          <span class="spinner-border spinner-border-sm" v-if="loading" role="status" aria-hidden="true"></span>
+                        </button>
                     </div>
                 </form>
                 
@@ -47,18 +50,20 @@ import image_2 from '@/assets/images/wallet.png';
 
 
 export default {
+  props: ['orderId', 'loading'],
   data() {
     return {
       orderpaying: false,
+      payment: null,
       paymentItems: [
         {
-          id: 1,
+          id: 4,
           name: this.$t('Global.payment_electronically'),
           desc: this.$t('Global.pay_online'),
           icon: image_1
         },
         {
-          id: 3,
+          id: 2,
           name: this.$t('Home.portfolio'),
           desc: this.$t('Global.pay_wallet'),
           icon: image_2
@@ -68,10 +73,25 @@ export default {
   },
 
   methods: {
+
+    handlepayId(payId) {
+      this.$emit('PaySelected', payId);
+    },
     submitData() {
-      this.orderpaying = false;
+      // this.orderpaying = false;
+      if (this.payment) {
+            this.handlepayId(this.payment);
+            this.$emit('paymentDone', true);
+        }
     }
-  }
+  },
+
+  computed: {
+    allRadiosChecked() {
+      // Check if all radio buttons are checked
+      return this.paymentItems.some(pay => pay.id === this.payment);
+    }
+  },
 }
 </script>
 <style lang="scss">

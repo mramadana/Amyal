@@ -6,7 +6,7 @@
             <div class="layout-form sm">
                 <h3 class="main-title sm mb-0">{{ $t("Global.Activate_notifications") }}</h3>
                 <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" @click="toggleNotifications" v-model="isSelected">
                     <div class="slider round"></div>
                 </label>
             </div>
@@ -16,11 +16,48 @@
   </div>
 </template>
 
-<script>
-    definePageMeta({
+<script setup>
+
+      definePageMeta({
         name: "Global.notifications_settings",
-    })
+        middleware: 'auth',
+    });
+
+    const isSelected = ref(false);
+    
+    const store = useAuthStore();
+    
+    const { token } = storeToRefs(store);
+
+    const { response } = responseApi();
+    const { successToast, errorToast } = toastMsg();
+    const axios = useApi();
+
+    const config = {
+        headers: { Authorization: `Bearer ${token.value}` }
+    };
+
+    const toggleNotifications = async () => {
+      axios.patch('switch-notify', {}, config).then(res => {
+        if (response(res) == "success") {
+                    successToast(res.data.msg);
+                    isSelected.value = res.data.data.notify
+                    localStorage.setItem('notify', isSelected.value)
+                    
+                } else {
+                    errorToast(res.data.msg)
+                }
+      })
+      console.log("toggleNotifications")
+    };
+
+    
+
+    onMounted(() => {
+      isSelected.value = localStorage.getItem('notify')
+  });
 </script>
+
 
 <style lang="scss" scoped>
 .switch {

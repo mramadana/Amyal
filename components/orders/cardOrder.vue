@@ -3,17 +3,17 @@
         <div class="row">
             <div class="col-12 col-md-6 mb-5" v-for="order in orders" :key="order.id">
                 <div class="order-box">
-                    <img :src="order.image" alt="order-img" class="order-img">
+                    <img :src="order.car_image" loading="lazy" alt="order-img" class="order-img">
                     <div class="info">
                         <div class="head-title">
-                            <h3 class="main-title mb-0"><span>{{ $t('Global.order_number') }}</span> : <span>{{ order.order_number }}</span></h3>
-                            <span class="hint">{{ order.time }}</span>
+                            <h3 class="main-title mb-0"><span>{{ $t('Global.order_number') }}</span> : <span>{{ order.id }}</span></h3>
+                            <span class="hint">{{ order.created_at }}</span>
                         </div>
-                        <h4 class="order-info main-disc">{{ order.name }}</h4>
+                        <h4 class="order-info main-disc">{{ order.car_name }}</h4>
                         <div class="order-status">
                             <div class="status">
                                 <i class="fas fa-x-ray"></i>
-                                <span>{{ $t('Global.status') }}</span> : <span class="hint-status">{{ order.oder_status }}</span>
+                                <span>{{ $t('Global.status') }}</span> : <span class="hint-status">{{ order.status_text }}</span>
                             </div>
                             <nuxt-link class="order-link" :to="'/orders/orderDetails/' + order.id">
                                 {{ $t('Global.view_more') }}
@@ -39,10 +39,14 @@ export default {
 
 <style lang="scss" scoped>
     .order-box {
-        padding: 18px;
-        box-shadow: 0 0 4px 2px #dddddd;
+        padding: 10px 15px;
+        box-shadow: 0px 0px 4px 0px rgba(128, 128, 128, 20%);
         border-radius: 10px;
         display: flex;
+        transition: transform .3s ease-out;
+        &:hover {
+            transform: translatey(-10px) scale(1.02);
+        }
         @media (max-width: 768px) {
             flex-direction: column;
         }
@@ -86,6 +90,7 @@ export default {
                     align-items: center;
                     gap: 7px;
                     color: #989898;
+                    font-size: 14px;
                     .hint-status {
                         color: var(--main);
                     }

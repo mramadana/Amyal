@@ -2,7 +2,7 @@
     <div class="container">
         <div class="layout-form custom-width">
             <h1 class="main-title bold lg mb-4">{{ $t("Auth.login") }}</h1>
-            <form @submit.prevent="submitData">
+            <form @submit.prevent="login" ref="loginForm">
                 <div class="row">
                     <div class="col-12 col-md-8 mr-auto">
 
@@ -22,7 +22,7 @@
                                         <span class="hint-red">*</span>
                                     </label>
                                     <div class="with_cun_select">
-                                        <input type="number" class="main_input" name="name" v-model="name" :placeholder="$t('Auth.please_mobile_number')">
+                                        <input type="number" class="main_input" v-model="phone" :placeholder="$t('Auth.please_mobile_number')">
                                         <div class="card d-flex justify-content-center dropdown_card">
                                         <Dropdown
                                         v-model="selectedCountry"
@@ -32,9 +32,10 @@
                                         <template #value="slotProps">
                                             <div v-if="slotProps.value" class="flex-group-me">
                                             <img
+                                                loading="lazy"
                                                 :alt="slotProps.value.label"
                                                 :src="slotProps.value.image"
-                                                :class="`mr-2 flag flag-${slotProps.value.key.toLowerCase()}`"
+                                                :class="`mr-2 flag flag-${slotProps.value.key}`"
                                                 style="width: 24px"
                                             />
                                             <div>{{ slotProps.value.key }}</div>
@@ -46,9 +47,10 @@
                                         <template #option="slotProps">
                                             <div class="flex-group-me">
                                             <img
+                                                loading="lazy"
                                                 :alt="slotProps.option.label"
                                                 :src="slotProps.option.image"
-                                                :class="`mr-2 flag flag-${slotProps.option.key.toLowerCase()}`"
+                                                :class="`mr-2 flag flag-${slotProps.option.key}`"
                                                 style="width: 24px"
                                             />
                                             <div>{{ slotProps.option.key }}</div>
@@ -65,7 +67,7 @@
                                         {{ $t('Auth.email') }}
                                         <span class="hint-red">*</span>
                                     </label>
-                                    <input type="text" class="main_input" name="name" v-model="name" :placeholder="$t('Auth.email')">
+                                    <input type="email" class="main_input" v-model="email" :placeholder="$t('Auth.email')">
                                 </div>
                             </div>
                         </div>
@@ -75,7 +77,7 @@
                                 <span class="hint-red">*</span>
                             </label>
                             <div class="main_input with_icon">
-                                <input :type="inputType" class="custum-input-icon" name="password" v-model="password"
+                                <input :type="inputType" class="custum-input-icon validInputs" valid="password" name="password" v-model="password"
                                     :placeholder="$t('Auth.please_enter_password')">
                                 <button class="static-btn" type="button" @click="togglePasswordVisibility"
                                     :class="{ 'active_class': passwordVisible }">
@@ -88,7 +90,11 @@
                             <p class="f-password">{{ $t('Auth.forget_password') }}</p>
                         </nuxt-link>
 
-                        <button type="submit" class="custom-btn w-100 mr-auto"> {{ $t('Auth.login') }} </button>
+                        <button type="submit" class="custom-btn w-100 mr-auto" :disabled="loading">
+                            {{ $t('Auth.login') }}
+                            <span class="spinner-border spinner-border-sm" v-if="loading" role="status"
+                                    aria-hidden="true"></span>
+                        </button>
 
                         <div class="new-sign mt-4">
                             {{ $t('Auth.dont_have_account') }}
@@ -102,69 +108,117 @@
     </div>
 </template>
 
-<script>
+<script setup>
 
-definePageMeta({
-    name: "Auth.login",
-    middleware: "auth",
-});
-import dropdown_img from '@/assets/images/Flag.webp';
-import dropdown_img_1 from '@/assets/images/messi.gif';
+    import { useI18n } from 'vue-i18n';
 
-export default {
-    data() {
-        return {
-            name: '',
-            password: '',
-            passwordVisible: false,
-            selectedCountry: {
-                    key: "+966",
-                    code: "SA",
-                    image: dropdown_img,
-            },
-            countries: [
-                {
-                key: "+966",
-                code: "SA",
-                image: dropdown_img_1,
-                },
-                {
-                key: "+20",
-                code: "Eg",
-                image: dropdown_img_1,
-                },
-            ],
-        };
-    },
+    definePageMeta({
+        name: "Auth.login",
+    })
+    const { t } = useI18n({ useScope: 'global' });
 
-    methods: {
-        handellAddress(event) {
-            this.location = event.address;
-            this.lat = event.info.geometry.location.lat();
-            this.lng = event.info.geometry.location.lng();
-            console.log(this.location, "location");
-            console.log(this.lat, "lat");
-            console.log(this.lng, "lng");
-            console.log("event");
-        },
+    // success response
+    const { response } = responseApi();
 
-        togglePasswordVisibility() {
-            this.passwordVisible = !this.passwordVisible;
-        },
+    // Toast
+    const { successToast, errorToast } = toastMsg();
 
-        submitData() {
-            this.$router.push('/');
-        }
-    },
+    // Axios
+    const axios = useApi();
 
-    computed: {
-        inputType() {
-            return this.passwordVisible ? 'text' : 'password';
-        },
-    },
+
+    // Store
+    const store = useAuthStore();
+    const { signInHandler } = store;
+
+    const loading = ref(false);
+    const errors = ref([]);
     
+    // countries
+    const selectedCountry = ref({})
+    const countries = ref([]);
+    const loginForm = ref(null);
+    const phone = ref('');
+    const email = ref('');
+    const password = ref('');
+    const passwordVisible = ref(false);
 
-};
+    // validation Function
+    const validate = () => {
+        let allInputs = document.querySelectorAll('.validInputs');
+        for (let i = 0; i < allInputs.length; i++) {
+            if (allInputs[i].value === '') {
+                errors.value.push(t(`validation.${allInputs[i].getAttribute('valid')}`));
+            }
+        }
+    }
+
+
+    // login Function
+    const login = async () => {
+        loading.value = true;
+        const fd = new FormData(loginForm.value);
+        fd.append('country_code', selectedCountry.value.key);
+        fd.append('device_id', 111);
+        fd.append('device_type', 'web');
+
+        if(phone.value) {
+            fd.append('phone_email', phone.value);
+            console.log(phone.value, "phone");
+        } else if(email.value) {
+            fd.append('phone_email', email.value);
+            console.log(email.value, "email");
+        };
+
+        // fd.append('device_id', notificationToken.value);
+
+        validate();
+
+        if (errors.value.length) {
+            errorToast(errors.value[0]);
+            loading.value = false;
+            errors.value = [];
+        } else {
+
+            loading.value = true;
+
+            // Get Returned Data From Store
+            const res = await signInHandler(fd);
+            res.status == "success" ? successToast(res.msg) : errorToast(res.msg);
+
+            loading.value = false;
+        }
+    }
+
+    // toggle password
+    const togglePasswordVisibility = () => {
+        passwordVisible.value = !passwordVisible.value
+    }
+
+    // input type
+
+    
+    const inputType = computed(() => {
+      return passwordVisible.value ? 'text' : 'password';
+    });
+
+    //  Get All countries
+    const getCountries = async () => {
+        await axios.get('countries').then(res => {
+            if (response(res) == "success") {
+                countries.value = res.data.data;
+                for (let i = 0; i < countries.value.length; i++) {
+                    if (countries.value[i].id == 1) {
+                        selectedCountry.value = countries.value[i];
+                    }
+                }
+            }
+        }).catch(err => console.log(err));
+    };
+
+    onMounted(async () => {
+        await getCountries();
+    });
 </script>
 
 

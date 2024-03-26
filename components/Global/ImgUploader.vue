@@ -2,7 +2,7 @@
 
 <template>
     <input
-      class=""
+      class="validInputs"
       type="file"
       :multiple="IsMultible"
       ref="deleteVal"
